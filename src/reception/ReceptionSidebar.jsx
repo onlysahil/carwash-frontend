@@ -7,7 +7,7 @@ export default function ReceptionSidebar() {
 
       <ul className="reception-menu">
         <li><Link to="/reception">Dashboard</Link></li>
-        <li><Link to="/reception/appointments">Appointments</Link></li>
+        <li><Link to="/reception/approvals">Appointments</Link></li>
         <li><Link to="/reception/staff">Staff</Link></li>
         <li><Link to="/reception/users">Users</Link></li>
         <li><Link to="/reception/packages">Packages</Link></li>

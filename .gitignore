@@ -27,9 +27,9 @@ yarn-error.log*
 
 
 
-node_modules
+
 .env
 dist
-build
+
 .vscode
-.DS_Store
+

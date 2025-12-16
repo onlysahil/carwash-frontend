@@ -32,13 +32,20 @@ import StaffEdit from "../pages/admin/StaffEdit";
 import AdminAddPackage from "../pages/AdminAddPackage/AdminAddPackage";
 import ReceptionLayout from '../reception/ReceptionLayout';
 import ReceptionStaffList from "../reception/ReceptionStaffList";
-import AdminApproval from "../pages/admin/AdminApproval";
+// import AdminApproval from "../pages/admin/AdminApproval";
 
 
 import ReceptionUsersList from "../reception/ReceptionUsersList";
 import ReceptionUserView from "../reception/ReceptionUserView";
 import ReceptionPackages from "../reception/ReceptionPackages";
 import ReceptionBooking from "../reception/ReceptionBooking";
+import StaffProfile from "../pages/Profile/StaffProfile";
+
+
+import ReceptionBookingApproval from "../reception/ReceptionBookingApproval";
+
+
+
 
 
 
@@ -76,7 +83,7 @@ function AppRouter() {
           <Route path="/admin/staff/:id/edit" element={<StaffEdit />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="/admin/add-package" element={<AdminAddPackage />} />
-          <Route path="approvals" element={<AdminApproval />} />
+          {/* <Route path="approvals" element={<AdminApproval />} /> */}
 
 
 
@@ -113,6 +120,11 @@ function AppRouter() {
 
           <Route path="bookings" element={<ReceptionBooking />} />
 
+          <Route path="approvals" element={<ReceptionBookingApproval />} />
+
+          
+
+
 
 
 
@@ -125,6 +137,7 @@ function AppRouter() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/booking" element={<Booking />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/staff/:role" element={<StaffProfile />} />
           <Route path="/my-bookings" element={<MyBookings />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />

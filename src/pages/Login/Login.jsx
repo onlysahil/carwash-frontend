@@ -14,7 +14,29 @@ function Login() {
   const [error, setError] = useState("");
   
 
- async function handleSubmit(e) {
+//  async function handleSubmit(e) {
+//   e.preventDefault();
+//   setError("");
+
+//   try {
+//     const isEmail = form.identifier.includes("@");
+
+//     const payload = isEmail
+//       ? { email: form.identifier, password: form.password }
+//       : { phone: form.identifier, password: form.password };
+
+//     await login(payload);
+
+//     setForm({ identifier: "", password: "" });
+//     navigate("/profile");
+//   } catch (err) {
+//     console.error("Login failed:", err);
+//     setError("Invalid email/phone or password");
+//   }
+// }
+
+
+async function handleSubmit(e) {
   e.preventDefault();
   setError("");
 
@@ -25,10 +47,21 @@ function Login() {
       ? { email: form.identifier, password: form.password }
       : { phone: form.identifier, password: form.password };
 
-    await login(payload);
+    const userData = await login(payload);
 
     setForm({ identifier: "", password: "" });
-    navigate("/profile");
+
+    // Role-based redirect
+    if (userData.role === "receptionist") {
+      navigate("/reception/approvals");
+    } else if (userData.role === "detailer") {
+      navigate("/staff/detailer"); // or your detailer dashboard
+    } else if (userData.role === "cleaner") {
+      navigate("/staff/cleaner"); // or your cleaner dashboard
+    } else {
+      navigate("/profile"); // default for normal users
+    }
+
   } catch (err) {
     console.error("Login failed:", err);
     setError("Invalid email/phone or password");

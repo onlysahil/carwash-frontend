@@ -1,0 +1,54 @@
+.reception-dashboard {
+  padding: 30px;
+  color: #fff;
+}
+
+.reception-dashboard h1 {
+  color: black;
+  margin-bottom: 20px;
+  font-size: 26px;
+}
+
+.reception-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #111;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.reception-table th,
+.reception-table td {
+  padding: 14px;
+  border-bottom: 1px solid #222;
+  text-align: left;
+}
+
+.reception-table th {
+  background: #181818;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.pending-status {
+  color: #ffcc00;
+}
+
+.action-dropdown {
+  background: #222;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  outline: none;
+}
+
+.action-dropdown option {
+  background: #111;
+}
+
+.no-requests {
+  color: black;
+}
