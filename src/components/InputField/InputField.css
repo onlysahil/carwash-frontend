@@ -1,0 +1,23 @@
+/* src/components/InputField/InputField.css */
+.input-field {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-field label {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.input-field input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  border-radius: 6px;
+}
+
+.input-field input:focus {
+  outline: none;
+  border-color: #111;
+}

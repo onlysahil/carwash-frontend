@@ -1,0 +1,72 @@
+.admin-services-page {
+  padding: 30px;
+  font-family: "Lexend", sans-serif;
+}
+
+.admin-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 40px;
+  background: #f7f7f7;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.admin-form input,
+.admin-form textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.admin-btn {
+  background: #0a84ff;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.admin-btn.danger {
+  background: #ff3b30;
+}
+
+.admin-btn.edit {
+  background: #ffa700;
+}
+
+.admin-btn.cancel {
+  background: gray;
+}
+
+.image-preview img {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.table-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+}

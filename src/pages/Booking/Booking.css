@@ -1,0 +1,114 @@
+/* ============================
+   BOOKING PAGE CONTAINER
+============================ */
+.booking-page {
+  width: 90%;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  font-family: "Lexend", sans-serif;
+}
+
+.booking-page h1 {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #0b355e;
+}
+
+/* ============================
+   FORM STYLING
+============================ */
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.booking-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Inputs / Select */
+.booking-form input,
+.booking-form select {
+  margin-top: 8px;
+  padding: 12px 14px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 1px solid #d0d0d0;
+  background: #fafafa;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.booking-form input:focus,
+.booking-form select:focus {
+  border-color: #0b355e;
+  box-shadow: 0 0 0px 2px rgba(11, 53, 94, 0.2);
+  background: #fff;
+}
+
+/* MULTIPLE SELECT BOX */
+.booking-form select[multiple] {
+  height: 140px;
+}
+
+/* ============================
+   TOTAL AMOUNT
+============================ */
+.booking-form p {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 10px;
+  color: #0b355e;
+}
+
+
+/* ============================
+   SUBMIT BUTTON
+============================ */
+.booking-form button {
+  margin-top: 10px;
+  padding: 14px;
+  font-size: 18px;
+  background: #0b355e;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.booking-form button:hover {
+  background: #082845;
+  transform: translateY(-1px);
+}
+
+
+/* ============================
+   RESPONSIVE
+============================ */
+@media (max-width: 600px) {
+  .booking-page {
+    padding: 20px;
+  }
+
+  .booking-form input,
+  .booking-form select {
+    font-size: 14px;
+  }
+
+  .booking-form button {
+    font-size: 16px;
+  }
+}

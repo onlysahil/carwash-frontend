@@ -1,0 +1,49 @@
+.admin-dashboard {
+  padding: 10px;
+}
+
+.dash-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+/* Cards */
+.dash-card {
+  background: #fff;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: 0.3s;
+  border-left: 6px solid #ffb400;
+}
+
+.dash-card:hover {
+  transform: translateY(-4px);
+}
+
+.dash-card h3 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.dash-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #000;
+}
+
+.dash-value.pending {
+  color: #e67e22;
+}
+
+.dash-value.completed {
+  color: #2ecc71;
+}

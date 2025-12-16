@@ -1,0 +1,333 @@
+.profile-info {
+  background: #eef1f4;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: none;
+  max-width: 420px;
+  position: relative;
+}
+
+/* AVATAR CIRCLE */
+.profile-info::before {
+  content: "";
+  width: 70px;
+  height: 70px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: block;
+  margin-bottom: 15px;
+  background-image: url("https://cdn-icons-png.flaticon.com/512/847/847969.png");
+  background-size: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+
+
+/* NAME */
+.profile-info p:first-of-type {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+/* LABEL */
+.profile-info strong {
+  display: block;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+/* VALUE BOX */
+.profile-info p {
+  font-size: 15px;
+  margin-bottom: 16px;
+}
+
+.profile-info p:not(:first-of-type) {
+  background: #ffffff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* REMOVE OLD BUTTON LAYOUT */
+.profile-buttons {
+  display: none;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+  margin-top: 20px;
+  width: 120px;
+  background: #c60000 !important;
+  color: #ffffff;
+  padding: 10px 0;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.logout-btn::before {
+  content: "⎋";
+  font-size: 16px;
+}
+
+/* ============================
+   EDIT FORM
+============================ */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-form label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.edit-form input {
+  background: #fff;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.edit-form input:focus {
+  outline: 2px solid #ddd;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* ============================
+   ERROR
+============================ */
+.error-msg {
+  color: #ff3b30;
+  font-size: 12px;
+}
+/* ACTION BUTTONS INSIDE FORM */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.save-btn,
+.cancel-edit-btn {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.save-btn {
+  background: #28a745;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #1f8d3b;
+}
+
+.cancel-edit-btn {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.cancel-edit-btn:hover {
+  background: #c8c8c8;
+}
+
+/* ============================
+   PROFILE BUTTONS
+============================ */
+.profile-buttons {
+     margin-top: 25px;
+    display: flex;
+    gap: 15px;
+    justify-content: right;
+}
+
+.profile-btn {
+  /* flex: 1; */
+  /* background: #ffb400; */
+  color: black;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 600;
+}
+
+.profile-btn:hover {
+  background: #e79e00;
+}
+
+.logout-btn {
+  background: #ff3b30 !important;
+  color: white;
+}
+
+.logout-btn:hover {
+  background: #e13227 !important;
+}
+
+/* SUCCESS / ERROR MESSAGE */
+.profile-msg {
+  background: #e8f9e8;
+  padding: 10px 15px;
+  border-left: 5px solid #2ecc71;
+  border-radius: 6px;
+  margin: 20px 0;
+  font-weight: 600;
+}
+
+/* ============================
+   BOOKINGS SECTION
+============================ */
+/* ============================
+   BOOKINGS – TABLE VIEW
+============================= */
+
+.booking-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #ffffff;
+  font-family: "Lexend", sans-serif;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+/* Header */
+.booking-table thead {
+  color: white;
+    background: #103B65;
+}
+
+.booking-table th {
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  border-bottom: 2px solid #e0e0e0;
+  white-space: nowrap;
+}
+
+/* Rows */
+.booking-table td {
+  padding: 14px 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+/* Hover Effect */
+.booking-table tbody tr:hover {
+  background: #fafafa;
+  transition: 0.2s ease-in-out;
+}
+
+/* Empty State */
+.no-bookings {
+  padding: 20px;
+  background: #f3f3f3;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* Status Colors */
+.status {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  color: #ca8a04;
+}
+
+.status.completed {
+  color: #16a34a;
+}
+
+.status.cancelled {
+  color: #dc2626;
+}
+
+/* Cancel Button */
+.cancel-btn {
+  padding: 8px 14px;
+  border: none;
+  background: #dc2626;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #b91c1c;
+}
+
+.cancel-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .booking-table {
+    font-size: 13px;
+  }
+  .booking-table th,
+  .booking-table td {
+    padding: 10px;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .booking-table th,
+  .booking-table td {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+
+/* ============================
+   RESPONSIVE DESIGN
+============================ */
+@media (max-width: 768px) {
+  .profile-container {
+    margin-top: 90px;
+    width: 94%;
+  }
+
+  .profile-buttons {
+    flex-direction: column;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}

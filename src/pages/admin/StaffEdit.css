@@ -1,0 +1,54 @@
+.staff-edit-page {
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.staff-edit-form {
+  background: white;
+  width: 450px;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.staff-edit-form h2 {
+  margin-bottom: 10px;
+}
+
+.staff-edit-form input,
+.staff-edit-form select {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+}
+
+.save-btn {
+  background: #28a745;
+  padding: 10px;
+  color: #fff;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.back-btn {
+  background: #444;
+  padding: 10px;
+  color: #fff;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.success {
+  background: #d4edda;
+  padding: 10px;
+  color: #155724;
+  border-radius: 6px;
+}

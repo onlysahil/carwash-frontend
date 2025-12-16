@@ -1,0 +1,23 @@
+/* src/styles/globals.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: monospace;
+}
+
+body {
+  
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f8f8f8;
+  color: #111;
+}
+
+a {
+  text-decoration: none;
+}
+
+button, input, select {
+  font-family: inherit;
+}

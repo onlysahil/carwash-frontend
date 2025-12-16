@@ -1,0 +1,48 @@
+.staff-view-page {
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  font-family: "Lexend", sans-serif;
+}
+
+.staff-card {
+  width: 450px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+}
+
+.staff-card h2 {
+  margin-bottom: 20px;
+  font-size: 26px;
+}
+
+.staff-info p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.staff-actions {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.edit-btn {
+  background: #007bff;
+  padding: 9px 18px;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.back-btn {
+  background: #333;
+  padding: 9px 18px;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

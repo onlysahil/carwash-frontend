@@ -1,0 +1,142 @@
+/* ================================
+   COMMON PAGE STYLE
+================================ */
+.user-view-page,
+.user-edit-page {
+  width: 95%;
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  font-family: "Lexend", sans-serif;
+  color: #333;
+}
+
+.user-view-page h2,
+.user-edit-page h2 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #1f2c3a;
+}
+
+/* ================================
+   USER VIEW PAGE STYLES
+================================ */
+
+.user-view-page p {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.user-view-page b {
+  color: #1f2c3a;
+}
+
+.user-view-page button {
+  padding: 8px 18px;
+  margin-right: 10px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  transition: 0.25s;
+}
+
+/* Back Button */
+.user-view-page button:first-of-type {
+  background: #6c757d;
+  color: #fff;
+}
+.user-view-page button:first-of-type:hover {
+  background: #5a6169;
+}
+
+/* Edit Button */
+.user-view-page button:last-of-type {
+  background: #007bff;
+  color: #fff;
+}
+.user-view-page button:last-of-type:hover {
+  background: #0066d3;
+}
+
+/* ================================
+   USER EDIT FORM
+================================ */
+.user-edit-page form {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-edit-page label {
+  font-weight: 600;
+  margin: 12px 0 6px;
+}
+
+.user-edit-page input,
+.user-edit-page select {
+  padding: 12px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.user-edit-page input:focus,
+.user-edit-page select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Update Button */
+.user-edit-page button[type="submit"] {
+  margin-top: 20px;
+  padding: 12px;
+  font-size: 16px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.user-edit-page button[type="submit"]:hover {
+  background: #218838;
+}
+
+/* Cancel Button */
+.user-edit-page > button {
+  margin-top: 12px;
+  padding: 10px;
+  font-size: 15px;
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.user-edit-page > button:hover {
+  background: #b52a37;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 600px) {
+  .user-view-page,
+  .user-edit-page {
+    padding: 20px;
+  }
+
+  .user-view-page button,
+  .user-edit-page button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

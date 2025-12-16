@@ -1,0 +1,240 @@
+/* ================================
+   STAFF LIST PAGE
+================================ */
+
+
+
+
+
+
+
+
+.staff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* SEARCH INPUT */
+.search-input {
+  padding: 8px 14px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+}
+
+/* FILTER BUTTONS */
+.filters button {
+  margin-right: 8px;
+  padding: 8px 14px;
+  background: #ddd;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.active-filter {
+  background: #007bff;
+  color: white;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.staff-list-page {
+  width: 95%;
+  max-width: 1400px;
+  margin: 40px auto;
+  font-family: "Lexend", sans-serif;
+  color: #333;
+}
+
+.staff-list-page h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  text-align: left;
+  color: #222;
+}
+
+/* ================================
+   TABLE STYLES
+================================ */
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.staff-table thead tr {
+  background: #1f2c3a;
+  color: #fff;
+  text-align: left;
+}
+
+.staff-table th,
+.staff-table td {
+  padding: 14px 18px;
+  font-size: 15px;
+}
+
+.staff-table tbody tr {
+  border-bottom: 1px solid #eaeaea;
+}
+
+.staff-table tbody tr:hover {
+  background: #f6f9fc;
+}
+
+/* ================================
+   BUTTONS
+================================ */
+.staff-table button {
+  padding: 6px 14px;
+  margin-right: 6px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: 0.25s ease;
+}
+
+/* View Button */
+.staff-table button:nth-child(1) {
+  background: #007bff;
+  color: #fff;
+}
+.staff-table button:nth-child(1):hover {
+  background: #0066d3;
+}
+
+/* Edit Button */
+.staff-table button:nth-child(2) {
+  background: #ffb703;
+  color: #222;
+}
+.staff-table button:nth-child(2):hover {
+  background: #e3a202;
+}
+
+/* Delete Button */
+.staff-table button:nth-child(3) {
+  background: #ef233c;
+  color: #fff;
+}
+.staff-table button:nth-child(3):hover {
+  background: #c9152c;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 768px) {
+  .staff-table thead {
+    display: none;
+  }
+
+  .staff-table tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .staff-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .staff-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #222;
+  }
+
+  .staff-table button {
+    margin: 5px 0;
+    width: 100%;
+  }
+}
+
+
+.staff-list-page {
+  padding: 20px;
+}
+
+.staff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filters button {
+  margin-right: 10px;
+  padding: 8px 14px;
+  border: none;
+  background: #ddd;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.filters .active-filter {
+  background: #007bff;
+  color: white;
+}
+
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.staff-table th,
+.staff-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+.staff-table button {
+  margin-right: 6px;
+  padding: 6px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination button {
+  margin: 0 10px;
+  padding: 8px 14px;
+}

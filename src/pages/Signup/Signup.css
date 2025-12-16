@@ -1,0 +1,368 @@
+/* --------------------------------------------------
+   🔥 Premium Signup Hero Section
+-------------------------------------------------- */
+.signup-hero {
+  width: 100%;
+  height: 450px;
+  position: relative;
+  background-image: url("../../../src/assets/images/sample1.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Dark cinematic overlay */
+.signup-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.7),
+    rgba(0,0,0,0.85)
+  );
+  z-index: 1;
+}
+
+/* -------------------------------------------
+   Floating animated water particles
+------------------------------------------- */
+.signup-bubbles span {
+  position: absolute;
+  bottom: -20px;
+  width: 12px;
+  height: 12px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  animation: bubble 6s infinite ease-in-out;
+  z-index: 2;
+}
+
+.signup-bubbles span:nth-child(1) { left: 20%; animation-delay: 0s; }
+.signup-bubbles span:nth-child(2) { left: 40%; animation-delay: 1.5s; width: 9px; height: 9px; }
+.signup-bubbles span:nth-child(3) { left: 60%; animation-delay: 0.8s; width: 16px; height: 16px; }
+.signup-bubbles span:nth-child(4) { left: 75%; animation-delay: 2s; width: 11px; height: 11px; }
+.signup-bubbles span:nth-child(5) { left: 50%; animation-delay: 3s; width: 14px; height: 14px; }
+
+@keyframes bubble {
+  0%   { transform: translateY(0); opacity: 0; }
+  20%  { opacity: 0.8; }
+  100% { transform: translateY(-260px); opacity: 0; }
+}
+
+/* -------------------------------------------
+   Text Content
+------------------------------------------- */
+.signup-hero-content {
+  z-index: 3;
+  text-align: center;
+  animation: fadeUp 1.2s ease-out;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.signup-hero-title {
+  color: #fff;
+  font-size: 44px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
+
+  /* Glow shine hover */
+  transition: 0.4s ease;
+  cursor: default;
+}
+
+.signup-hero-title:hover {
+  text-shadow: 0 0 15px rgba(255,255,255,0.6);
+}
+
+/* Underline animation */
+.signup-hero-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0%;
+  height: 3px;
+  background: white;
+  transform: translateX(-50%);
+  transition: width 0.4s ease;
+}
+
+.signup-hero-title:hover::after {
+  width: 70%;
+}
+
+.signup-hero-sub {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #ddd;
+  letter-spacing: 1px;
+  animation: fadeUp 1.4s ease-out;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== Signup Container ===== */
+.signup-container {
+  padding: 40px;
+  max-width: 450px;
+  margin: 40px auto;
+  background: #fff;
+}
+
+/* ===== Title ===== */
+.signup-container h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+}
+
+/* ===== Form Styling ===== */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-form label {
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.signup-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+/* ===== Error Text Under Each Field ===== */
+.error-msg {
+  color: #e60000;
+  font-size: 14px;
+  margin: 4px 0 0 4px;
+  line-height: 1.2;
+}
+
+/* ===== Success & Error Messages (Top/Bottom messages) ===== */
+.signup-success {
+  color: #0a8a0a;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+.signup-error {
+  color: red;
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* ===== Submit Button ===== */
+.signup-form button {
+  background: #111;
+  color: #fff;
+  padding: 12px;
+  font-size: 18px;
+  border-radius: 6px;
+  border: none;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.signup-form button:hover {
+  background: #333;
+}
+
+
+/* Link container */
+.auth-switch {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+}
+
+/* The actual link */
+.auth-switch a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+/* Hover effect */
+.auth-switch a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ---------------------------- */
+/* ✨ Animated Section Wrapper */
+/* ---------------------------- */
+
+.signup-animated-section {
+  margin-top: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 40px;
+  background: linear-gradient(135deg, #e8f5ff, #ffffff);
+  border-radius: 25px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Left Panel */
+.signup-animated-left {
+  flex: 1;
+}
+
+.signup-animated-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #0b3d91;
+}
+
+.signup-animated-subtitle {
+  color: #444;
+  margin: 8px 0 18px;
+}
+
+.signup-animated-points li {
+  list-style: none;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 15px;
+}
+
+/* Right Panel */
+.signup-animated-right {
+  flex: 1;
+  position: relative;
+}
+
+/* ---------------------------- */
+/* 🚗 Car Animation (Float + Move) */
+/* ---------------------------- */
+
+.signup-car-illustration {
+  display: none;
+  width: 320px;
+  z-index: 5;
+  animation: carFloat 3s ease-in-out infinite,
+             carMove 5s ease-in-out infinite;
+}
+
+@keyframes carFloat {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes carMove {
+  0%   { transform: translateX(0); }
+  50%  { transform: translateX(18px); }
+  100% { transform: translateX(0); }
+}
+
+/* ---------------------------- */
+/* 💦 Water Spray Behind Car */
+/* ---------------------------- */
+
+.water-spray {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  width: 280px;
+  height: 160px;
+
+  background: radial-gradient(
+    circle,
+    rgba(0, 150, 255, 0.35),
+    rgba(0, 150, 255, 0.05)
+  );
+
+  filter: blur(25px);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  animation: waterSprayPulse 3.5s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes waterSprayPulse {
+  0%   { transform: translateX(-50%) scale(1); opacity: 0.6; }
+  50%  { transform: translateX(-50%) scale(1.25); opacity: 0.9; }
+  100% { transform: translateX(-50%) scale(1); opacity: 0.6; }
+}
+
+/* ---------------------------- */
+/* 🫧 Floating Bubbles */
+/* ---------------------------- */
+
+.bubble {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  backdrop-filter: blur(3px);
+  animation: bubbleFloat 6s infinite ease-in-out;
+  z-index: 0;
+}
+
+.bubble1 { width: 35px; height: 35px; bottom: 10px; left: 20%; animation-delay: 0s; }
+.bubble2 { width: 22px; height: 22px; bottom: 15px; left: 50%; animation-delay: 1s; }
+.bubble3 { width: 32px; height: 32px; bottom: 8px; right: 20%; animation-delay: 2s; }
+.bubble4 { width: 18px; height: 18px; bottom: 25px; right: 50%; animation-delay: 3s; }
+
+@keyframes bubbleFloat {
+  0%   { transform: translateY(0) scale(1); opacity: 0.7; }
+  50%  { transform: translateY(-40px) scale(1.2); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 0.7; }
+}
+
+/* Responsive */
+@media (max-width: 850px) {
+  .signup-animated-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .signup-car-illustration {
+    width: 250px;
+  }
+}

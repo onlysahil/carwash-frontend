@@ -1,0 +1,59 @@
+.mybookings-container {
+  padding: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.mybookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mybookings-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mybookings-details p {
+  margin: 4px 0;
+  color: #333;
+}
+
+.cancel-btn {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #d62828;
+}
+
+.status-confirmed {
+  color: green;
+}
+
+.status-cancelled {
+  color: red;
+}
+
+.mybookings-empty {
+  text-align: center;
+  margin-top: 40px;
+  color: #777;
+}
+
+.mybookings-msg {
+  margin-bottom: 20px;
+  color: #007bff;
+}

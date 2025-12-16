@@ -1,0 +1,52 @@
+.approval-page {
+  padding: 30px;
+  color: #fff;
+}
+
+.approval-page h1 {
+    color: black;
+  margin-bottom: 20px;
+  font-size: 26px;
+}
+
+.approval-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #111;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.approval-table th,
+.approval-table td {
+  padding: 14px;
+  border-bottom: 1px solid #222;
+  text-align: left;
+}
+
+.approval-table th {
+  background: #181818;
+}
+
+.pending-status {
+  color: #ffcc00;
+  font-weight: bold;
+}
+
+.action-dropdown {
+  background: #222;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  outline: none;
+}
+
+.action-dropdown option {
+  background: #111;
+}
+
+
+.noreq{
+  color: black;
+}

@@ -1,0 +1,73 @@
+/* ----------- PAGE BACKGROUND ----------- */
+.admin-login-page {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f0f0f, #1b1b1b);
+  padding: 20px;
+}
+
+/* ----------- LOGIN BOX ----------- */
+.admin-login-box {
+  width: 380px;
+  background: #111;
+  padding: 40px 35px;
+  border-radius: 14px;
+  box-shadow: 0px 0px 25px rgba(255, 180, 0, 0.25);
+  text-align: center;
+  border: 1px solid rgba(255, 180, 0, 0.3);
+}
+
+/* Title */
+.admin-login-title {
+  color: #ffb400;
+  font-size: 28px;
+  margin-bottom: 25px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Error message */
+.admin-error {
+  color: #ff4444;
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+/* ----------- INPUT FIELDS ----------- */
+.admin-input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #0c0c0c;
+  color: #fff;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.admin-input:focus {
+  border-color: #ffb400;
+  outline: none;
+  box-shadow: 0 0 6px rgba(255, 180, 0, 0.6);
+}
+
+/* ----------- LOGIN BUTTON ----------- */
+.admin-login-btn {
+  width: 100%;
+  padding: 14px;
+  background: #ffb400;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.admin-login-btn:hover {
+  background: #e0a000;
+}

@@ -1,0 +1,310 @@
+.home-container {
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Hero */
+.home-hero {
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  padding: 0 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+.home-hero h1,
+.home-hero p,
+.home-hero .home-btn {
+  position: relative;
+  z-index: 1;
+}
+
+.home-hero h1 {
+  font-size: 44px;
+  font-weight: 700;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.home-hero p {
+  font-size: 18px;
+  margin-top: 12px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.home-btn {
+  margin-top: 25px;
+  padding: 14px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #00aaff;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+  background: #0077aa;
+  transform: translateY(-3px);
+}
+
+/* Services Preview */
+.home-services-preview {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.home-services-preview h2 {
+  font-size: 34px;
+  margin-bottom: 40px;
+  color: #111;
+}
+
+.home-service-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.home-service-grid .service-card {
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  padding: 25px;
+  border-radius: 20px;
+  width: 280px;
+  text-align: center;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.home-service-grid .service-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.15);
+}
+
+.home-service-grid .service-card img {
+  width: 100%;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+
+
+
+.home-service-grid .service-card {
+  width: 340px;
+  /* bigger card */
+  min-height: 400px;
+  /* taller card */
+  padding: 35px;
+  /* more breathing space */
+  border-radius: 24px;
+  background: linear-gradient(145deg, #ffffff, #f3f3f3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+  transition: 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* BIGGER image */
+.home-service-grid .service-card img {
+  width: 100%;
+  height: 200px;
+  /* bigger image */
+  border-radius: 18px;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+/* =================== SHINE EFFECT =================== */
+
+/* .service-card::after { */
+  /* content: "";
+  position: absolute;
+  top: -120%;
+  left: -120%;
+  width: 260%;
+ 
+  height: 260%;
+  background: linear-gradient(120deg,
+      transparent,
+      rgba(255, 255, 255, 0.6),
+      transparent);
+  transform: rotate(25deg);
+  animation: shine 3s infinite;
+  z-index: 10;
+  pointer-events: none; */
+/* } */
+
+@keyframes shine {
+  0% {
+    transform: translate(-100%, -100%) rotate(25deg);
+  }
+
+  100% {
+    transform: translate(150%, 150%) rotate(25deg);
+  }
+}
+
+/* =================== FLOAT ANIMATION =================== */
+
+.service-card {
+  animation: floatService 4s ease-in-out infinite;
+}
+
+@keyframes floatService {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* =================== HOVER EFFECT =================== */
+.service-card:hover {
+  transform: translateY(-18px) scale(1.06);
+  box-shadow: 0 35px 55px rgba(0, 0, 0, 0.22);
+}
+
+
+:root {
+  --blue: #00aaff;
+  --dark-blue: #003d66;
+  --light-blue: #e7f8ff;
+  --white: #ffffff;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 38px;
+  text-align: center;
+  color: var(--dark-blue);
+  margin-bottom: 60px;
+}
+
+
+
+
+.mm-hero {
+  position: relative;
+  height: 50vh;
+  background: url('../../assets/images/bgimage.jpg') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* subtle dark overlay */
+.mm-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1;
+}
+
+/* content */
+.mm-hero-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  padding: 0 20px;
+  max-width: 750px;
+}
+
+/* modern clean title */
+.mm-hero-title {
+  font-size: 3.2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.2;
+}
+
+.mm-hero-title span {
+  color: #00c8ff;
+  /* minimal water blue */
+}
+
+/* subtitle */
+.mm-hero-subtitle {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+/* buttons */
+.mm-hero-buttons {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.mm-btn-primary,
+.mm-btn-secondary {
+  padding: 12px 28px;
+  border-radius: 40px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+/* clean minimal blue btn */
+.mm-btn-primary {
+  background: #00c8ff;
+  color: #fff;
+}
+
+.mm-btn-primary:hover {
+  background: #009ac7;
+}
+
+/* outline btn */
+.mm-btn-secondary {
+  border: 2px solid #fff;
+  color: #fff;
+  background: transparent;
+}
+
+.mm-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+
+
+@media (max-width: 480px) {
+  .home-hero h1 {
+    font-size: 32px;
+  }
+
+  .home-hero p {
+    font-size: 16px;
+  }
+
+  .home-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}

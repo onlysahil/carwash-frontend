@@ -1,0 +1,102 @@
+.admin-page-title {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Search + Filters */
+.admin-filter-bar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.admin-filter-bar input,
+.admin-filter-bar select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Table */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.admin-table th {
+  background: #111;
+  color: #fff;
+  padding: 14px;
+  text-align: left;
+  font-size: 15px;
+}
+
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.admin-table tr:hover {
+  background: #f8f8f8;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-pending {
+  background: #fff4cc;
+  color: #b87b00;
+}
+
+.status-confirmed {
+  background: #d4f5d6;
+  color: #2f8f3a;
+}
+
+.status-inprogress {
+  background: #d6e6ff;
+  color: #2a63da;
+}
+
+.status-completed {
+  background: #c8f7f4;
+  color: #087a73;
+}
+
+.status-cancelled {
+  background: #ffd9d9;
+  color: #d62828;
+}
+
+/* Pagination */
+.admin-pagination {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.admin-pagination button {
+  padding: 8px 14px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.admin-pagination button:hover {
+  background: #000;
+}
