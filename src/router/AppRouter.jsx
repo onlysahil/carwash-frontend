@@ -43,6 +43,7 @@ import StaffProfile from "../pages/Profile/StaffProfile";
 
 
 import ReceptionBookingApproval from "../reception/ReceptionBookingApproval";
+import SetPassword from "../pages/staff/set-password";
 
 
 
@@ -142,6 +143,8 @@ function AppRouter() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/users" element={<UsersList />} />
+          <Route path="/staff/set-password" element={<SetPassword />} />
+
 
 
           <Route path="/login" element={<Login />} />

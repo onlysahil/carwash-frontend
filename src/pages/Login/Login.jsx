@@ -8,72 +8,64 @@ function Login() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-  identifier: "",
-  password: "",
-});
+    identifier: "",
+    password: "",
+  });
+
   const [error, setError] = useState("");
-  
 
-//  async function handleSubmit(e) {
-//   e.preventDefault();
-//   setError("");
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
 
-//   try {
-//     const isEmail = form.identifier.includes("@");
+    try {
+      const isEmail = form.identifier.includes("@");
 
-//     const payload = isEmail
-//       ? { email: form.identifier, password: form.password }
-//       : { phone: form.identifier, password: form.password };
+      // 🔹 Staff first login → EMAIL ONLY
+      const payload = isEmail
+        ? { email: form.identifier }
+        : { phone: form.identifier, password: form.password };
 
-//     await login(payload);
+      const userData = await login(payload);
 
-//     setForm({ identifier: "", password: "" });
-//     navigate("/profile");
-//   } catch (err) {
-//     console.error("Login failed:", err);
-//     setError("Invalid email/phone or password");
-//   }
-// }
+      setForm({ identifier: "", password: "" });
 
+      // 🔹 Role-based redirect
+      if (userData.role === "receptionist") {
+        navigate("/reception/approvals");
+      } else if (userData.role === "detailer") {
+        navigate("/staff/detailer");
+      } else if (userData.role === "cleaner") {
+        navigate("/staff/cleaner");
+      } else {
+        navigate("/profile");
+      }
 
-async function handleSubmit(e) {
-  e.preventDefault();
-  setError("");
+    } catch (err) {
+  const data = err?.response?.data;
 
-  try {
-    const isEmail = form.identifier.includes("@");
-
-    const payload = isEmail
-      ? { email: form.identifier, password: form.password }
-      : { phone: form.identifier, password: form.password };
-
-    const userData = await login(payload);
-
-    setForm({ identifier: "", password: "" });
-
-    // Role-based redirect
-    if (userData.role === "receptionist") {
-      navigate("/reception/approvals");
-    } else if (userData.role === "detailer") {
-      navigate("/staff/detailer"); // or your detailer dashboard
-    } else if (userData.role === "cleaner") {
-      navigate("/staff/cleaner"); // or your cleaner dashboard
-    } else {
-      navigate("/profile"); // default for normal users
-    }
-
-  } catch (err) {
-    console.error("Login failed:", err);
-    setError("Invalid email/phone or password");
+  if (
+    data?.message === "Password not set. Please set your password first." &&
+    data?.token
+  ) {
+    navigate("/staff/set-password", {
+      state: {
+        token: data.token,
+        email: form.identifier,
+      },
+    });
+    return;
   }
+
+  setError("Invalid login credentials");
 }
-
-
+  }
 
   useEffect(() => {
     const el = document.querySelector(".scroll-animate");
 
     function reveal() {
+      if (!el) return;
       const rect = el.getBoundingClientRect();
       if (rect.top < window.innerHeight - 120) {
         el.classList.add("visible");
@@ -86,18 +78,19 @@ async function handleSubmit(e) {
     return () => window.removeEventListener("scroll", reveal);
   }, []);
 
-
+  const isEmail = form.identifier.includes("@");
 
   return (
     <>
-
-
+      {/* HERO BANNER */}
       <section className="cw-banner">
         <div className="cw-banner-overlay"></div>
 
         <div className="cw-banner-content">
           <h1 className="cw-banner-title">Welcome Back</h1>
-          <p className="cw-banner-subtitle">Login to continue your premium car care</p>
+          <p className="cw-banner-subtitle">
+            Login to continue your premium car care
+          </p>
 
           <div className="cw-bubbles">
             <span></span><span></span><span></span><span></span><span></span>
@@ -105,54 +98,68 @@ async function handleSubmit(e) {
         </div>
       </section>
 
+      {/* LOGIN FORM */}
       <div className="login-container">
         <h1>Login</h1>
 
         <form className="login-form" onSubmit={handleSubmit}>
           <label>Email or Phone Number</label>
-<input
-  type="text"
-  value={form.identifier}
-  onChange={(e) =>
-    setForm({ ...form, identifier: e.target.value })
-  }
-  required
-/>
-
-          <label>Password</label>
           <input
-            type="password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            type="text"
+            value={form.identifier}
+            onChange={(e) =>
+              setForm({ ...form, identifier: e.target.value })
+            }
             required
           />
 
-          <button type="submit" className="login-btn">Login</button>
+          {/* 🔹 PASSWORD ONLY FOR NON-EMAIL LOGIN */}
+          {!isEmail && (
+            <>
+              <label>Password</label>
+              <input
+                type="password"
+                value={form.password}
+                onChange={(e) =>
+                  setForm({ ...form, password: e.target.value })
+                }
+                required
+              />
+            </>
+          )}
+
+          {/* 🔹 HELPER TEXT FOR STAFF */}
+          {isEmail && (
+            <p className="login-hint">
+              First-time staff login does not require a password.
+            </p>
+          )}
+
+          <button type="submit" className="login-btn">
+            Login
+          </button>
 
           {error && <p className="login-error">{error}</p>}
 
-          <p className="forgot-pass">
-            <Link to="/forgot-password">Forgot Password?</Link>
-          </p>
+          {!isEmail && (
+            <p className="forgot-pass">
+              <Link to="/forgot-password">Forgot Password?</Link>
+            </p>
+          )}
 
-         
           <p className="login-signup-text">
             Don’t have an account?{" "}
-            <Link to="/signup" className="signup-link">Sign up</Link>
+            <Link to="/signup" className="signup-link">
+              Sign up
+            </Link>
           </p>
-
-
         </form>
       </div>
 
-
-
-
-
+      {/* PREMIUM SECTION */}
       <div className="premium-middle-section">
         <div className="premium-bg"></div>
 
-        
         <div className="premium-bubbles">
           <span></span><span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span><span></span>
@@ -164,18 +171,13 @@ async function handleSubmit(e) {
             Discover fast, secure and personalized services tailored for your car.
           </p>
 
-          <button className="premium-btn shimmer">Explore Services</button>
+          <button className="premium-btn shimmer">
+            Explore Services
+          </button>
         </div>
       </div>
-
-
-
-
     </>
   );
 }
 
 export default Login;
-
-
-

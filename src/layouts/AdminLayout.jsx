@@ -7,9 +7,9 @@ function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [openBookings, setOpenBookings] = useState(
-    location.pathname.includes("/admin/bookings")
-  );
+  // const [openBookings, setOpenBookings] = useState(
+  //   location.pathname.includes("/admin/bookings")
+  // );
 
   function logoutAdmin() {
     localStorage.removeItem("access_token");
@@ -32,8 +32,12 @@ function AdminLayout() {
             <NavLink to="/admin/dashboard">📊 Dashboard</NavLink>
           </li>
 
-          {/* ---------------- BOOKINGS DROPDOWN ---------------- */}
-          <li className={`dropdown ${openBookings ? "open" : ""}`}>
+          <li className={location.pathname === "/admin/bookings" ? "active" : ""}>
+                  <NavLink to="/admin/bookings">📌 All Bookings</NavLink>
+                </li>
+
+          
+          {/* <li className={`dropdown ${openBookings ? "open" : ""}`}>
             <button
               className="dropdown-btn"
               onClick={() => setOpenBookings(!openBookings)}
@@ -53,8 +57,8 @@ function AdminLayout() {
                 </li>
               </ul>
             )}
-          </li>
-          {/* --------------------------------------------------- */}
+          </li> */}
+         
 
           <li className={location.pathname.includes("/admin/services") ? "active" : ""}>
             <NavLink to="/admin/services">🛠️ Services</NavLink>

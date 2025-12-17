@@ -1,29 +1,22 @@
 // src/pages/admin/AddStaff.jsx
 import { useState, useEffect } from "react";
 import axiosClient from "../../api/axiosClient";
-import { useNavigate } from "react-router-dom";
-
 import "./AddStaff.css";
 
 function AddStaff() {
-  const navigate = useNavigate();
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("detailer"); // default role
+  const [role, setRole] = useState("detailer");
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
   const [staffList, setStaffList] = useState([]);
 
-  // Fetch ALL staff: detailers + cleaners
+  // Fetch ALL staff
   const loadStaff = async () => {
     try {
       const res = await axiosClient.get("/users");
 
-      // Show only staff (detailer OR cleaner)
       const onlyStaff = res.data.filter(
         (u) => u.role === "detailer" || u.role === "cleaner"
       );
@@ -38,7 +31,7 @@ function AddStaff() {
     loadStaff();
   }, []);
 
-  // Handle Add Staff
+  // Add Staff
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -48,22 +41,19 @@ function AddStaff() {
       const res = await axiosClient.post("/users/staff", {
         name,
         email,
-        password,
-        role, // MUST match API — "detailer" / "cleaner"
+        role,
         phone: "N/A",
         address: "N/A",
       });
 
-      if (res.status === 201 || res.status === 200) {
+      if (res.status === 201) {
         setSuccess("Staff member added successfully!");
 
-        // Clear form
         setName("");
         setEmail("");
-        setPassword("");
         setRole("detailer");
 
-        loadStaff(); // Refresh table
+        loadStaff();
       }
     } catch (err) {
       console.error("Add Staff Error:", err.response?.data);
@@ -104,17 +94,6 @@ function AddStaff() {
           </div>
 
           <div className="input-group">
-            <label>Password</label>
-            <input
-              type="password"
-              placeholder="Create password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="input-group">
             <label>Role</label>
             <select value={role} onChange={(e) => setRole(e.target.value)}>
               <option value="detailer">Detailer</option>
@@ -126,9 +105,13 @@ function AddStaff() {
             + Add Staff
           </button>
         </form>
+
+        <p className="info-text">
+          Login credentials will be generated automatically.
+        </p>
       </div>
 
-      {/* STAFF LIST SECTION */}
+      {/* STAFF LIST */}
       <div className="staff-list-card">
         <h3>Recently Added Staff</h3>
 
@@ -144,7 +127,6 @@ function AddStaff() {
                 <th>Created At</th>
               </tr>
             </thead>
-
             <tbody>
               {staffList.map((s) => (
                 <tr key={s._id}>
