@@ -1,7 +1,7 @@
 // src/layouts/AdminLayout.jsx
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import "./AdminLayout.css";
-import { useState } from "react";
+
 
 function AdminLayout() {
   const location = useLocation();
@@ -33,32 +33,8 @@ function AdminLayout() {
           </li>
 
           <li className={location.pathname === "/admin/bookings" ? "active" : ""}>
-                  <NavLink to="/admin/bookings">📌 All Bookings</NavLink>
-                </li>
-
-          
-          {/* <li className={`dropdown ${openBookings ? "open" : ""}`}>
-            <button
-              className="dropdown-btn"
-              onClick={() => setOpenBookings(!openBookings)}
-            >
-              📌 Bookings
-              <span className="arrow">{openBookings ? "▲" : "▼"}</span>
-            </button>
-
-            {openBookings && (
-              <ul className="dropdown-menu">
-                <li className={location.pathname === "/admin/bookings" ? "active" : ""}>
-                  <NavLink to="/admin/bookings">All Bookings</NavLink>
-                </li>
-
-                <li className={location.pathname === "/admin/bookings/approvals" ? "active" : ""}>
-                  <NavLink to="/admin/approvals">Approvals Request</NavLink>
-                </li>
-              </ul>
-            )}
-          </li> */}
-         
+            <NavLink to="/admin/bookings">📌 All Bookings</NavLink>
+          </li>
 
           <li className={location.pathname.includes("/admin/services") ? "active" : ""}>
             <NavLink to="/admin/services">🛠️ Services</NavLink>
@@ -74,6 +50,10 @@ function AdminLayout() {
 
           <li className={location.pathname.includes("/admin/add-staff") ? "active" : ""}>
             <NavLink to="/admin/add-staff">👤 Add Staff</NavLink>
+          </li>
+
+          <li className={location.pathname.includes("/admin/staff-approvals") ? "active" : ""}>
+            <NavLink to="/admin/staff-approvals">👤 Approve Staff</NavLink>
           </li>
 
           <li className={location.pathname.includes("/admin/add-package") ? "active" : ""}>

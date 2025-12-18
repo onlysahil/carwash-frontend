@@ -68,28 +68,41 @@ function useAuth() {
   // ================================
   // Login Function
   // ================================
-  const login = async (credentials) => {
-    const res = await axiosClient.post("/auth/login", credentials);
+ const login = async (credentials) => {
+  const res = await axiosClient.post("/auth/login", credentials);
 
-    const token = res.data.token;
-    if (!token) throw new Error("No token returned");
+  // 🔴 FIRST-TIME STAFF → SET PASSWORD FLOW
+  if (res.data.message && res.data.token && !res.data.user) {
+    return {
+      requiresPasswordSetup: true,
+      token: res.data.token,
+      message: res.data.message,
+    };
+  }
 
-    // Save token
-    localStorage.setItem("token", token);
-    localStorage.setItem("access_token", token);
+  // ✅ NORMAL LOGIN FLOW
+  const token = res.data.token;
+  if (!token) throw new Error("No token returned");
 
-    // Decode token to get user details
-    const decoded = jwtDecode(token);
+  // Save auth token
+  localStorage.setItem("token", token);
+  localStorage.setItem("access_token", token);
 
-    localStorage.setItem("user_id", decoded.id);
-    localStorage.setItem("email", decoded.email);
-    localStorage.setItem("role", decoded.role);
+  // Decode token
+  const decoded = jwtDecode(token);
 
-    // Load user profile
-    await loadProfile();
+  localStorage.setItem("user_id", decoded.id);
+  localStorage.setItem("email", decoded.email);
+  localStorage.setItem("role", decoded.role);
 
-    return decoded;
+  // Load full profile
+  await loadProfile();
+
+  return {
+    ...decoded,
+    canUploadKYC: decoded.canUploadKYC,
   };
+};
 
   // ================================
   // Logout

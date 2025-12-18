@@ -42,7 +42,7 @@
  
 .service-locations {
   font-size: 14px;
-  color: #a0aec0;
+  color: white;
   margin: 0;
   line-height: 1.6;
 }
@@ -80,7 +80,7 @@
     gap: 12px;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid white;
     padding-bottom: 20px;
     width: 100%;
 }
@@ -107,7 +107,7 @@
 }
  
 .nav-link-secondary {
-  color: #94a3b8;
+  color: white;
   text-decoration: none;
   font-size: 14px;
   transition: color 0.3s ease;
@@ -148,14 +148,16 @@
   gap: 15px;
 }
  
-.contact-title {
-  font-size: 20px;
+.contact-title1 {
+
+  font-size: 32px;
   font-weight: bold;
   margin: 0 0 10px 0;
   color: white;
 }
  
 .contact-item {
+    width: fit-content;
   background-color: white;
   color: #0a1628;
   padding: 10px 20px;

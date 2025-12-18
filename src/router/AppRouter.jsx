@@ -32,6 +32,7 @@ import StaffEdit from "../pages/admin/StaffEdit";
 import AdminAddPackage from "../pages/AdminAddPackage/AdminAddPackage";
 import ReceptionLayout from '../reception/ReceptionLayout';
 import ReceptionStaffList from "../reception/ReceptionStaffList";
+import AdminStaffApprovals from "../pages/admin/AdminStaffApprovals";
 // import AdminApproval from "../pages/admin/AdminApproval";
 
 
@@ -53,15 +54,17 @@ import SetPassword from "../pages/staff/set-password";
 
 
 
+
 import AdminRoute from "../routes/AdminRoute";
 import AdminSettings from "../pages/admin/AdminSettings";
+import UploadKYC from "../pages/staff/upload-kyc";
 
 function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
 
-        
+
         <Route path="/admin" element={
           <AdminRoute>
             <AdminLayout />
@@ -84,6 +87,8 @@ function AppRouter() {
           <Route path="/admin/staff/:id/edit" element={<StaffEdit />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="/admin/add-package" element={<AdminAddPackage />} />
+          <Route path="/admin/staff-approvals" element={<AdminStaffApprovals />}
+          />
           {/* <Route path="approvals" element={<AdminApproval />} /> */}
 
 
@@ -93,7 +98,7 @@ function AppRouter() {
 
         </Route>
 
-       
+
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route
           path="/reception/*" element={<ReceptionLayout />}
@@ -104,16 +109,16 @@ function AppRouter() {
 
         <Route path="/reception/*" element={<ReceptionLayout />}>
 
-          
+
           <Route path="users" element={<ReceptionUsersList />} />
 
-          
+
           <Route path="users/:id" element={<ReceptionUserView />} />
           <Route path="users/:id/edit" element={<UserEdit />} />
 
           <Route path="staff" element={<ReceptionStaffList />} />
 
-          
+
           <Route path="staff/:id" element={<UserView />} />
           <Route path="staff/:id/edit" element={<UserEdit />} />
 
@@ -123,7 +128,7 @@ function AppRouter() {
 
           <Route path="approvals" element={<ReceptionBookingApproval />} />
 
-          
+
 
 
 
@@ -131,7 +136,7 @@ function AppRouter() {
 
         </Route>
 
-      
+
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
@@ -144,6 +149,8 @@ function AppRouter() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/users" element={<UsersList />} />
           <Route path="/staff/set-password" element={<SetPassword />} />
+          <Route path="/staff/upload-kyc" element={<UploadKYC />} />
+
 
 
 
@@ -154,7 +161,7 @@ function AppRouter() {
         </Route>
 
 
-        
+
         <Route path="*" element={<NotFound />} />
 
       </Routes>
