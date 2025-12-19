@@ -23,7 +23,7 @@ function StaffProfile() {
 
   // -------------------- LOAD STAFF & BOOKINGS --------------------
   useEffect(() => {
-    const staffId = localStorage.getItem("staff_id"); // or use role-based auth
+    const staffId = localStorage.getItem("user_id");
 
     if (!staffId || staffId === "undefined") {
       setIsLoggedIn(false);

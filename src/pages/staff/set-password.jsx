@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import axiosClient from "../../api/axiosClient";
 
+import "./SetPassword.css";
+
 function SetPassword() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();

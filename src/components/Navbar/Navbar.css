@@ -15,7 +15,7 @@
   background: #fff;
   border-radius: 50px;
 
-  position: fixed;        /* 👈 sticky navbar */
+  position: static;        /* 👈 sticky navbar */
   top: 20px;               /* 👈 distance from top */
   z-index: 1000;           /* 👈 stay above content */
 

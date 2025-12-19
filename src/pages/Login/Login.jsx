@@ -20,59 +20,55 @@ function Login() {
   setError("");
 
   try {
-    const payload = { email: form.email, password: form.password };
-    const res = await axiosClient.post("/auth/login", payload);
+    const result = await login({
+      email: form.email,
+      password: form.password,
+    });
 
-    // ✅ Normal login
-    localStorage.setItem("token", res.data.token);
+    // FIRST-TIME STAFF (set password)
+    if (result?.requiresPasswordSetup) {
+      navigate("/staff/set-password", {
+        state: {
+          token: result.token,
+          email: form.email,
+        },
+      });
+      return;
+    }
 
-    if (res.data.canUploadKYC) {
+    const role = result.role;
+
+    // Staff KYC
+    if (result.canUploadKYC && result.verificationStatus !== "approved") {
       navigate("/staff/upload-kyc");
       return;
     }
 
+    // Receptionist
+    if (role === "receptionist") {
+      navigate("/reception/dashboard");
+      return;
+    }
+
+    // Staff (detailer / cleaner)
+    if (role === "detailer" || role === "cleaner") {
+      navigate(`/staff/profile/${role}`);
+      return;
+    }
+
+    // Normal user
     navigate("/profile");
 
   } catch (err) {
-  const data = err.response?.data;
-
-  // FIRST-TIME STAFF → REDIRECT TO SET PASSWORD
-  if (
-    err.response?.status === 401 &&
-    data?.message === "Password not set. Please set your password first."
-  ) {
-    navigate("/staff/set-password", {
-      state: {
-        token: data.token, // make sure backend sends this
-        email: form.email,
-      },
-    });
-    return;
+    setError(err.message || "Login failed");
   }
-
-  setError(data?.message || "Login failed");
-}
 }
 
 
 
   return (
     <>
-      {/* HERO BANNER */}
-      <section className="cw-banner">
-        <div className="cw-banner-overlay"></div>
 
-        <div className="cw-banner-content">
-          <h1 className="cw-banner-title">Welcome Back</h1>
-          <p className="cw-banner-subtitle">
-            Login to continue your premium car care
-          </p>
-
-          <div className="cw-bubbles">
-            <span></span><span></span><span></span><span></span><span></span>
-          </div>
-        </div>
-      </section>
 
       {/* LOGIN FORM */}
       <div className="login-container">
@@ -80,22 +76,22 @@ function Login() {
 
         <form className="login-form" onSubmit={handleSubmit}>
           <label>Email</label>
-<input
-  type="email"
-  value={form.email}
-  onChange={(e) => setForm({ ...form, email: e.target.value })}
-/>
+          <input
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
 
-{form.password !== null && (
-  <>
-    <label>Password</label>
-    <input
-      type="password"
-      value={form.password}
-      onChange={(e) => setForm({ ...form, password: e.target.value })}
-    />
-  </>
-)}
+          {form.password !== null && (
+            <>
+              <label>Password</label>
+              <input
+                type="password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+              />
+            </>
+          )}
 
           <button type="submit" className="login-btn">
             Login

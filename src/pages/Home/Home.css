@@ -47,19 +47,38 @@
     right: 0;
 }
  
-@media (max-width: 900px) {
+/* TABLET */
+@media (max-width: 1024px) {
+  .hero {
+    padding: 40px;
+  }
+
+  .hero-car {
+    max-width: 65%;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
   .hero {
     flex-direction: column;
     text-align: center;
+    padding: 40px 20px;
+    min-height: auto;
   }
+
   .hero-left {
     max-width: 100%;
   }
-  .hero-right img {
-    width: 70%;
+
+  .hero-car {
+    position: relative;
+    max-width: 90%;
+    margin-top: 30px;
+    bottom: 0;
   }
 }
- 
+
 
 
 
@@ -254,7 +273,12 @@
     flex-direction: column;
     text-align: center;
   }
+
   .wwd-img {
-    width: 60%;
+    width: 80%;
+  }
+
+  .wwd-content {
+    max-width: 100%;
   }
 }

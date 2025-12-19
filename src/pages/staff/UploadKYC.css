@@ -1,0 +1,102 @@
+/* =========================
+   PAGE LAYOUT
+========================= */
+.kyc-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #eef2f7, #dde6f1);
+  font-family: "Inter", system-ui, sans-serif;
+  padding: 20px;
+}
+
+/* =========================
+   CARD
+========================= */
+.kyc-container > div {
+  background: #ffffff;
+  padding: 34px;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.09);
+}
+
+/* =========================
+   HEADING
+========================= */
+.kyc-container h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+/* =========================
+   FORM
+========================= */
+.kyc-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.kyc-container label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.kyc-container input {
+  padding: 12px 14px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  margin-bottom: 18px;
+  transition: 0.25s;
+}
+
+.kyc-container input:focus {
+  outline: none;
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+}
+
+/* =========================
+   BUTTON
+========================= */
+.kyc-container button {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.kyc-container button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(5, 150, 105, 0.3);
+}
+
+.kyc-container button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================
+   ERROR
+========================= */
+.kyc-container .error-msg {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+}

@@ -2,19 +2,28 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import "./AdminStaffApprovals.css";
 
-
 function AdminStaffApprovals() {
   const [staffList, setStaffList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Fetch pending staff
+  // 🔹 Fetch ONLY pending staff
   const fetchPendingStaff = async () => {
     try {
       setLoading(true);
-      const res = await axiosClient.get("/users?role=detailer&verificationStatus=pending");
-      setStaffList(res.data || []);
+
+      const res = await axiosClient.get(
+        "/users?role=detailer&verificationStatus=pending"
+      );
+
+      // 🛡️ Extra safety filter (frontend guard)
+      const pendingOnly = (res.data || []).filter(
+        (staff) => staff.verificationStatus === "pending"
+      );
+
+      setStaffList(pendingOnly);
     } catch (err) {
+      console.error(err);
       setError("Failed to load staff requests");
     } finally {
       setLoading(false);
@@ -25,26 +34,34 @@ function AdminStaffApprovals() {
     fetchPendingStaff();
   }, []);
 
-  // Approve staff
+  // ✅ Approve staff
   const approveStaff = async (id) => {
     if (!window.confirm("Approve this staff member?")) return;
 
     try {
-      await axiosClient.patch(`/users/staff/${id}/verify`);
-      fetchPendingStaff();
+      await axiosClient.patch(`/users/staff/${id}/verify`, {
+        verificationStatus: "approved",
+      });
+
+      // 🔥 Instantly remove from list (no refetch delay)
+      setStaffList((prev) => prev.filter((staff) => staff._id !== id));
     } catch (err) {
-      alert("Approval failed");
+      console.error(err.response?.data || err.message);
+      alert(err.response?.data?.message || "Approval failed");
     }
   };
 
-  // Reject staff (soft reject)
+  // ❌ Reject staff
   const rejectStaff = async (id) => {
     if (!window.confirm("Reject this staff member?")) return;
 
     try {
       await axiosClient.patch(`/users/staff/${id}/reject`);
-      fetchPendingStaff();
+
+      // 🔥 Remove rejected staff from UI
+      setStaffList((prev) => prev.filter((staff) => staff._id !== id));
     } catch (err) {
+      console.error(err);
       alert("Rejection failed");
     }
   };
@@ -88,6 +105,7 @@ function AdminStaffApprovals() {
               <button
                 className="approve-btn"
                 onClick={() => approveStaff(staff._id)}
+                disabled={staff.verificationStatus === "approved"}
               >
                 Approve
               </button>

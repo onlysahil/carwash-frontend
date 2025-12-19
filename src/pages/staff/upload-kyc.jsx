@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import { useNavigate } from "react-router-dom";
+import "./UploadKYC.css";
 
 function UploadKYC() {
   const navigate = useNavigate();

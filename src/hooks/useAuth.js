@@ -72,13 +72,35 @@ function useAuth() {
   const res = await axiosClient.post("/auth/login", credentials);
 
   // 🔴 FIRST-TIME STAFF → SET PASSWORD FLOW
-  if (res.data.message && res.data.token && !res.data.user) {
-    return {
-      requiresPasswordSetup: true,
-      token: res.data.token,
-      message: res.data.message,
-    };
-  }
+  // FIRST-TIME PASSWORD SET
+if (
+  res.data.message === "Password not set. Please set your password first." &&
+  res.data.token
+) {
+  return {
+    requiresPasswordSetup: true,
+    token: res.data.token,
+  };
+}
+
+// KYC UPLOAD FLOW
+if (
+  res.data.message === "Login allowed for KYC upload" &&
+  res.data.token
+) {
+  localStorage.setItem("token", res.data.token);
+
+  const decoded = jwtDecode(res.data.token);
+  localStorage.setItem("user_id", decoded.id);
+  localStorage.setItem("role", decoded.role);
+
+  return {
+    canUploadKYC: true,
+    verificationStatus: "pending",
+    role: decoded.role,
+  };
+}
+
 
   // ✅ NORMAL LOGIN FLOW
   const token = res.data.token;

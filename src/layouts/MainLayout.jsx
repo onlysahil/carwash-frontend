@@ -7,7 +7,7 @@ function MainLayout() {
   return (
     <>
       <Navbar />
-      <main style={{ minHeight: "80vh" }}>
+      <main style={{ minHeight: "140vh" }}>
         <Outlet />
       </main>
       <Footer />

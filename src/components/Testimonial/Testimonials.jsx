@@ -81,7 +81,7 @@ export default function Testimonials() {
       margin: '0 auto',
     },
     title: {
-      fontSize: '64px',
+      fontSize: '52px',
       fontWeight: 'bold',
       color: '#103B65',
       marginBottom: '40px',
