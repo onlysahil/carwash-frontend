@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 import "./ReceptionBookingApproval.css";
-import Loader from "../components/Loader/Loader";
+// import Loader from "../components/Loader/Loader";
 
 function ReceptionBookingApproval() {
   const [bookings, setBookings] = useState([]);
@@ -36,7 +36,8 @@ function ReceptionBookingApproval() {
     }
   }
 
-  const getUserName = (id) => {
+  const getUserName = (id, booking) => {
+    if (!id) return booking.customerName || "Guest";
     const user = users.find((u) => u._id === id);
     return user ? user.name : "Unknown";
   };
@@ -45,7 +46,7 @@ function ReceptionBookingApproval() {
   async function approveBooking(id) {
     try {
       await axiosClient.patch(`/bookings/${id}/approve`);
-      loadData();
+      await loadData();
       alert("Booking approved!");
     } catch (err) {
       console.error(err);
@@ -57,7 +58,7 @@ function ReceptionBookingApproval() {
   async function rejectBooking(id) {
     try {
       await axiosClient.patch(`/bookings/cancel/${id}`);
-      loadData();
+      await loadData();
       alert("Booking rejected!");
     } catch (err) {
       console.error(err);
@@ -93,7 +94,7 @@ function ReceptionBookingApproval() {
     }
   }
 
-  if (loading) return <Loader />;
+  // if (loading) return <Loader />;
 
   return (
     <div className="reception-dashboard">
@@ -118,18 +119,21 @@ function ReceptionBookingApproval() {
           <tbody>
             {bookings.map((b) => (
               <tr key={b._id}>
-                <td>{getUserName(b.userId)}</td>
+                <td>{getUserName(b.userId, b)}</td>
                 <td>{new Date(b.date).toLocaleDateString()}</td>
                 <td>{b.time}</td>
                 <td>
                   {b.vehicleModel} ({b.vehicleNumber})
                 </td>
 
-                <td className={`status ${b.status}`}>{b.status}</td>
+                {/* STATUS */}
+                <td className={`status ${b.bookingStatus}`}>
+                  {b.bookingStatus}
+                </td>
 
                 {/* APPROVAL */}
                 <td>
-                  {b.status === "pending" || b.status === "unconfirmed" ? (
+                  {b.bookingStatus === "pending" ? (
                     <select
                       className="action-dropdown"
                       onChange={(e) => {
@@ -148,31 +152,31 @@ function ReceptionBookingApproval() {
                 </td>
 
                 {/* ASSIGNMENT */}
-                <td>
-                  <select
-                    disabled={b.status !== "approved"}
-                    onChange={(e) => assignDetailer(b._id, e.target.value)}
-                  >
-                    <option value="">Assign Detailer</option>
-                    {detailers.map((d) => (
-                      <option key={d._id} value={d._id}>
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
+               <td className="assign-cell">
+  <select
+    disabled={!["approved", "confirmed"].includes(b.bookingStatus)}
+    onChange={(e) => assignDetailer(b._id, e.target.value)}
+  >
+    <option value="">Assign Detailer</option>
+    {detailers.map((d) => (
+      <option key={d._id} value={d._id}>
+        {d.name}
+      </option>
+    ))}
+  </select>
 
-                  <select
-                    disabled={b.status !== "approved"}
-                    onChange={(e) => assignCleaner(b._id, e.target.value)}
-                  >
-                    <option value="">Assign Cleaner</option>
-                    {cleaners.map((c) => (
-                      <option key={c._id} value={c._id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </td>
+  <select
+    disabled={!["approved", "confirmed"].includes(b.bookingStatus)}
+    onChange={(e) => assignCleaner(b._id, e.target.value)}
+  >
+    <option value="">Assign Cleaner</option>
+    {cleaners.map((c) => (
+      <option key={c._id} value={c._id}>
+        {c.name}
+      </option>
+    ))}
+  </select>
+</td>
               </tr>
             ))}
           </tbody>

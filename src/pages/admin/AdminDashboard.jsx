@@ -20,12 +20,14 @@ function AdminDashboard() {
     try {
       const token = localStorage.getItem("access_token");
 
-      const res = await axios.get("http://localhost:8000/api/admin/dashboard/", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        "http://localhost:8000/api/admin/dashboard/",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       setStats(res.data);
-
     } catch (err) {
       console.error("Dashboard fetch error", err);
     }
@@ -34,41 +36,42 @@ function AdminDashboard() {
   return (
     <div className="admin-dashboard">
 
-      <h2 className="dash-title">📊 Admin Dashboard</h2>
+      {/* HEADER */}
+      <div className="admin-topbar">
+        <h2>Admin Dashboard</h2>
 
-      <div className="dashboard-grid">
-
-        <div className="dash-card">
-          <h3>Total Revenue</h3>
-          <p className="dash-value">₹ {stats.totalRevenue}</p>
+        <div className="admin-search">
+          <input type="text" placeholder="Search" />
         </div>
-
-        <div className="dash-card">
-          <h3>Total Bookings</h3>
-          <p className="dash-value">{stats.totalBookings}</p>
-        </div>
-
-        <div className="dash-card">
-          <h3>Today's Bookings</h3>
-          <p className="dash-value">{stats.todayBookings}</p>
-        </div>
-
-        <div className="dash-card">
-          <h3>Pending Bookings</h3>
-          <p className="dash-value pending">{stats.pendingBookings}</p>
-        </div>
-
-        <div className="dash-card">
-          <h3>Completed Bookings</h3>
-          <p className="dash-value completed">{stats.completedBookings}</p>
-        </div>
-
-        <div className="dash-card">
-          <h3>Total Customers</h3>
-          <p className="dash-value">{stats.totalCustomers}</p>
-        </div>
-
       </div>
+
+      {/* TODAY DATA */}
+      <h3 className="section-title">Today’s Data</h3>
+      <div className="card-grid">
+        <StatCard title="Today's Booking" value={stats.todayBookings} bg="purple" />
+        <StatCard title="Today's Completed Booking" value={stats.completedBookings} bg="green" />
+        <StatCard title="Today's Pending Booking" value={stats.pendingBookings} bg="orange" />
+      </div>
+
+      {/* TOTAL DATA */}
+      <h3 className="section-title">Total Data</h3>
+      <div className="card-grid">
+        <StatCard title="Total Revenue" value={`₹ ${stats.totalRevenue}`} bg="mint" />
+        <StatCard title="Completed Booking" value={stats.completedBookings} bg="green" />
+        <StatCard title="Pending Booking" value={stats.pendingBookings} bg="orange" />
+        <StatCard title="Total Booking" value={stats.totalBookings} bg="purple" />
+        <StatCard title="Total Customers" value={stats.totalCustomers} bg="blue" />
+      </div>
+
+    </div>
+  );
+}
+
+function StatCard({ title, value, bg }) {
+  return (
+    <div className={`stat-card ${bg}`}>
+      <p className="stat-title">{title}</p>
+      <h2 className="stat-value">{value}</h2>
     </div>
   );
 }

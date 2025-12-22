@@ -52,7 +52,9 @@ function AdminBookings() {
   // ******* UPDATE STATUS (Completed Only) *******
   async function markCompleted(id) {
     try {
-      await axiosClient.put(`/bookings/${id}`, { status: "completed" });
+      await axiosClient.put(`/bookings/${id}`, {
+        bookingStatus: "completed"
+      })
       loadData();
     } catch (err) {
       console.error(err);
@@ -71,7 +73,7 @@ function AdminBookings() {
     }
   }
 
-   if (loading) return <Loader />;
+  if (loading) return <Loader />;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
@@ -100,7 +102,7 @@ function AdminBookings() {
           ) : (
             bookings.map((b) => (
               <tr key={b._id}>
-                <td>{getUserName(b.userId)}</td>
+                <td>{b.customerName || getUserName(b.userId)}</td>
 
                 <td>
                   {getServices(b.serviceIds).map((s, i) => (
@@ -115,10 +117,12 @@ function AdminBookings() {
 
                 <td>₹{b.totalAmount}</td>
 
-                <td className={`status ${b.status.toLowerCase()}`}>{b.status}</td>
+                <td className={`status ${b.bookingStatus?.toLowerCase()}`}>
+                  {b.bookingStatus}
+                </td>
 
                 <td>
-                  {b.status !== "completed" && b.status !== "cancelled" && (
+                  {b.bookingStatus !== "completed" && b.bookingStatus !== "cancelled" && (
                     <button
                       className="admin-btn"
                       onClick={() => markCompleted(b._id)}

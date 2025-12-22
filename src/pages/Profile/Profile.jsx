@@ -21,14 +21,25 @@ function Profile() {
     address: ""
   });
 
+  useEffect(() => {
+  const role = localStorage.getItem("role");
+
+  // 🚫 Staff must NOT open user profile
+  if (role === "detailer" || role === "cleaner" || role === "receptionist") {
+    navigate(`/staff/profile/${role}`, { replace: true });
+  }
+}, [navigate]);
+
   // -------------------- LOAD PROFILE & BOOKINGS --------------------
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
 
-    if (!userId || userId === "undefined") {
-      setIsLoggedIn(false);
-      return;
-    }
+    const token = localStorage.getItem("token");
+
+if (!token) {
+  setIsLoggedIn(false);
+  return;
+}
 
     loadUserProfile(userId);
     loadUserBookings(userId);

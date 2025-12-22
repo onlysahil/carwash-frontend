@@ -21,6 +21,28 @@ function StaffProfile() {
     address: ""
   });
 
+
+  useEffect(() => {
+  const storedRole = localStorage.getItem("role");
+
+  // 🔒 Not logged in
+  if (!storedRole) {
+    navigate("/login");
+    return;
+  }
+
+  // ❌ User trying to access staff page
+  if (!["detailer", "cleaner", "receptionist"].includes(storedRole)) {
+    navigate("/profile", { replace: true });
+    return;
+  }
+
+  // ❌ URL role mismatch
+  if (storedRole !== role) {
+    navigate(`/staff/profile/${storedRole}`, { replace: true });
+  }
+}, [navigate, role]);
+
   // -------------------- LOAD STAFF & BOOKINGS --------------------
   useEffect(() => {
     const staffId = localStorage.getItem("user_id");
@@ -37,7 +59,7 @@ function StaffProfile() {
   // Load staff data
   const loadStaffProfile = async (staffId) => {
     try {
-      const res = await axiosClient.get(`/staff/${staffId}`);
+      const res = await axiosClient.get(`/users/${staffId}`);
       setStaff(res.data);
 
       setFormData({
@@ -53,14 +75,19 @@ function StaffProfile() {
   };
 
   // Load bookings assigned to staff
-  const loadStaffBookings = async (staffId) => {
-    try {
-      const res = await axiosClient.get(`/bookings/staff/${staffId}`);
-      setBookings(res.data || []);
-    } catch (err) {
-      console.error("Failed to load bookings", err);
-    }
-  };
+ const loadStaffBookings = async (staffId) => {
+  try {
+    const endpoint =
+      role === "cleaner"
+        ? `/bookings/assigned/cleaner/${staffId}`
+        : `/bookings/assigned/detailer/${staffId}`;
+
+    const res = await axiosClient.get(endpoint);
+    setBookings(res.data || []);
+  } catch (err) {
+    console.error("Failed to load bookings", err);
+  }
+};
 
   // -------------------- VALIDATION --------------------
   const validate = () => {
@@ -80,7 +107,7 @@ function StaffProfile() {
     if (!validate()) return;
 
     try {
-      const staffId = localStorage.getItem("staff_id");
+      const staffId = localStorage.getItem("user_id");
       const res = await axiosClient.patch(`/staff/${staffId}`, formData);
 
       setStaff(res.data);
@@ -162,7 +189,7 @@ function StaffProfile() {
             </form>
           ) : (
             <>
-              <p><strong>Name:</strong> {staff.name}</p>
+              <p><strong> Full Name:</strong> {staff.name}</p>
               <p><strong>Email:</strong> {staff.email}</p>
               <p><strong>Role:</strong> {staff.role}</p>
               <p><strong>Number:</strong> {staff.phone}</p>
@@ -202,19 +229,21 @@ function StaffProfile() {
             </thead>
 
             <tbody>
-              {bookings.map((b) => (
-                <tr key={b._id}>
-                  <td>{b.bookingNumber || "N/A"}</td>
-                  <td>{b.serviceIds?.map((s) => s.title).join(", ")}</td>
-                  <td>{b.vehicleModel || "N/A"}</td>
-                  <td>{b.vehicleNumber || "N/A"}</td>
-                  <td>{b.location || "N/A"}</td>
-                  <td>{new Date(b.date).toLocaleDateString()}</td>
-                  <td>{b.time}</td>
-                  <td className={`status ${b.status}`}>{b.status}</td>
-                </tr>
-              ))}
-            </tbody>
+  {bookings.map((b) => (
+    <tr key={b._id}>
+      <td>{b.bookingNumber}</td>
+      <td>{b.serviceIds?.map((s) => s.title).join(", ")}</td>
+      <td>{b.vehicleModel}</td>
+      <td>{b.vehicleNumber}</td>
+      <td>{b.location}</td>
+      <td>{new Date(b.date).toLocaleDateString()}</td>
+      <td>{b.time}</td>
+      <td className="status">
+        {role === "cleaner" ? b.cleanerStatus : b.detailerStatus}
+      </td>
+    </tr>
+  ))}
+</tbody>
           </table>
         )}
       </div>

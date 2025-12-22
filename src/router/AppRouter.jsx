@@ -44,7 +44,7 @@ import StaffProfile from "../pages/Profile/StaffProfile";
 
 
 import ReceptionBookingApproval from "../reception/ReceptionBookingApproval";
-import SetPassword from "../pages/staff/set-password";
+import SetPassword from "../pages/staff/Set-password";
 
 
 
@@ -57,7 +57,8 @@ import SetPassword from "../pages/staff/set-password";
 
 import AdminRoute from "../routes/AdminRoute";
 import AdminSettings from "../pages/admin/AdminSettings";
-import UploadKYC from "../pages/staff/upload-kyc";
+import UploadKYC from "../pages/staff/UploadKYC";
+import KycPending from "../pages/staff/KycPending";
 
 function AppRouter() {
   return (
@@ -143,13 +144,15 @@ function AppRouter() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/booking" element={<Booking />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/staff/:role" element={<StaffProfile />} />
+          <Route path="/staff/profile/:role" element={<StaffProfile />} />
           <Route path="/my-bookings" element={<MyBookings />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/users" element={<UsersList />} />
           <Route path="/staff/set-password" element={<SetPassword />} />
           <Route path="/staff/upload-kyc" element={<UploadKYC />} />
+          <Route path="/staff/kyc-pending" element={<KycPending />} />
+
 
 
 

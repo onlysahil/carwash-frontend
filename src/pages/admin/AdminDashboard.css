@@ -1,49 +1,80 @@
 .admin-dashboard {
-  padding: 10px;
+  padding: 24px;
+  background: #f7f8fa;
+  min-height: 100vh;
 }
 
-.dash-title {
-  font-size: 26px;
-  font-weight: 700;
+/* Top bar */
+.admin-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 25px;
 }
 
-.dashboard-grid {
+.admin-topbar h2 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.admin-search input {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  outline: none;
+  width: 200px;
+}
+
+/* Sections */
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 20px 0 15px;
+}
+
+/* Card grid */
+.card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
 }
 
-/* Cards */
-.dash-card {
+/* Stat cards */
+.stat-card {
   background: #fff;
-  padding: 22px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  transition: 0.3s;
-  border-left: 6px solid #ffb400;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.dash-card:hover {
-  transform: translateY(-4px);
+.stat-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
 }
 
-.dash-card h3 {
-  font-size: 16px;
-  color: #333;
-  margin-bottom: 5px;
+.stat-value {
+  font-size: 26px;
+  font-weight: 700;
 }
 
-.dash-value {
-  font-size: 28px;
-  font-weight: bold;
-  color: #000;
+/* Color variants (exact tone match) */
+.stat-card.purple {
+  background: #f3f0ff;
 }
 
-.dash-value.pending {
-  color: #e67e22;
+.stat-card.green {
+  background: #eef9ee;
 }
 
-.dash-value.completed {
-  color: #2ecc71;
+.stat-card.orange {
+  background: #fff3e6;
+}
+
+.stat-card.mint {
+  background: #e9f7f6;
+}
+
+.stat-card.blue {
+  background: #eef3ff;
 }

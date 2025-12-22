@@ -1,6 +1,7 @@
 .reception-dashboard {
   padding: 30px;
   color: #fff;
+  overflow: visible;
 }
 
 .reception-dashboard h1 {
@@ -14,7 +15,7 @@
   border-collapse: collapse;
   background: #111;
   border-radius: 10px;
-  overflow: hidden;
+  overflow: visible; /* 🔥 FIX */
 }
 
 .reception-table th,
@@ -22,6 +23,7 @@
   padding: 14px;
   border-bottom: 1px solid #222;
   text-align: left;
+  overflow: visible; /* 🔥 FIX */
 }
 
 .reception-table th {
@@ -43,10 +45,13 @@
   border-radius: 6px;
   border: 1px solid #333;
   outline: none;
+  position: relative;
+  z-index: 9999; /* 🔥 FIX */
 }
 
 .action-dropdown option {
   background: #111;
+  color: #fff;
 }
 
 .no-requests {

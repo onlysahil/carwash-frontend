@@ -121,9 +121,8 @@ if (
   await loadProfile();
 
   return {
-    ...decoded,
-    canUploadKYC: decoded.canUploadKYC,
-  };
+  role: decoded.role,
+};
 };
 
   // ================================

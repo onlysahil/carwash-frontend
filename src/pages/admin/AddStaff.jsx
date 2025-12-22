@@ -6,19 +6,21 @@ import "./AddStaff.css";
 function AddStaff() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("detailer");
+  const [role, setRole] = useState("receptionist");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [staffList, setStaffList] = useState([]);
 
-  // Fetch ALL staff
+  // Fetch ALL staff (exclude admin)
   const loadStaff = async () => {
     try {
       const res = await axiosClient.get("/users");
 
       const onlyStaff = res.data.filter(
-        (u) => u.role === "detailer" || u.role === "cleaner"
+        (u) => u.role !== "admin"
       );
 
       setStaffList(onlyStaff);
@@ -42,16 +44,20 @@ function AddStaff() {
         name,
         email,
         role,
-        phone: "N/A",
-        address: "N/A",
+        phone,
+        address,
       });
 
       if (res.status === 201) {
-        setSuccess("Staff member added successfully!");
+        setSuccess(
+          "Staff created successfully. Password setup link sent to email."
+        );
 
         setName("");
         setEmail("");
-        setRole("detailer");
+        setRole("receptionist");
+        setPhone("");
+        setAddress("");
 
         loadStaff();
       }
@@ -94,8 +100,31 @@ function AddStaff() {
           </div>
 
           <div className="input-group">
+            <label>Phone</label>
+            <input
+              type="text"
+              placeholder="Enter phone number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Address</label>
+            <input
+              type="text"
+              placeholder="Enter address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="input-group">
             <label>Role</label>
             <select value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="receptionist">Receptionist</option>
               <option value="detailer">Detailer</option>
               <option value="cleaner">Cleaner</option>
             </select>
@@ -107,13 +136,13 @@ function AddStaff() {
         </form>
 
         <p className="info-text">
-          Login credentials will be generated automatically.
+          A password setup link will be sent to the staff’s email.
         </p>
       </div>
 
       {/* STAFF LIST */}
       <div className="staff-list-card">
-        <h3>Recently Added Staff</h3>
+        <h3>Staff Members</h3>
 
         {staffList.length === 0 ? (
           <p className="no-staff">No staff added yet</p>

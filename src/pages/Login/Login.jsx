@@ -25,7 +25,7 @@ function Login() {
       password: form.password,
     });
 
-    // FIRST-TIME STAFF (set password)
+    // FIRST-TIME STAFF
     if (result?.requiresPasswordSetup) {
       navigate("/staff/set-password", {
         state: {
@@ -38,25 +38,41 @@ function Login() {
 
     const role = result.role;
 
-    // Staff KYC
-    if (result.canUploadKYC && result.verificationStatus !== "approved") {
-      navigate("/staff/upload-kyc");
-      return;
+    // ================= STAFF FLOW =================
+    if (role === "detailer" || role === "cleaner" || role === "receptionist") {
+      const profile = await axiosClient.get(
+        `/users/${localStorage.getItem("user_id")}`
+      );
+
+      const user = profile.data;
+
+      if (!user.documentUrls || user.documentUrls.length === 0) {
+        navigate("/staff/upload-kyc");
+        return;
+      }
+
+      if (user.verificationStatus === "pending") {
+        navigate("/staff/kyc-pending");
+        return;
+      }
+
+      if (user.verificationStatus === "rejected") {
+        navigate("/staff/upload-kyc");
+        return;
+      }
+
+      if (user.verificationStatus === "approved") {
+        if (role === "receptionist") {
+          navigate("/reception/dashboard");
+          return;
+        }
+
+        navigate(`/staff/profile/${role}`);
+        return;
+      }
     }
 
-    // Receptionist
-    if (role === "receptionist") {
-      navigate("/reception/dashboard");
-      return;
-    }
-
-    // Staff (detailer / cleaner)
-    if (role === "detailer" || role === "cleaner") {
-      navigate(`/staff/profile/${role}`);
-      return;
-    }
-
-    // Normal user
+    // ================= NORMAL USER FLOW =================
     navigate("/profile");
 
   } catch (err) {
