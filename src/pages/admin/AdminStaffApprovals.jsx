@@ -2,26 +2,30 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import "./AdminStaffApprovals.css";
 
+const STAFF_ROLES = ["detailer", "cleaner", "receptionist"];
+
 function AdminStaffApprovals() {
   const [staffList, setStaffList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // 🔹 Fetch ONLY pending staff
   const fetchPendingStaff = async () => {
     try {
       setLoading(true);
 
+      // ✅ FETCH ALL PENDING USERS
       const res = await axiosClient.get(
-        "/users?role=detailer&verificationStatus=pending"
+        "/users?verificationStatus=pending"
       );
 
-      // 🛡️ Extra safety filter (frontend guard)
-      const pendingOnly = (res.data || []).filter(
-        (staff) => staff.verificationStatus === "pending"
+      // 🛡️ FRONTEND SAFETY FILTER
+      const pendingStaffOnly = (res.data || []).filter(
+        (user) =>
+          STAFF_ROLES.includes(user.role) &&
+          user.verificationStatus === "pending"
       );
 
-      setStaffList(pendingOnly);
+      setStaffList(pendingStaffOnly);
     } catch (err) {
       console.error(err);
       setError("Failed to load staff requests");
@@ -34,7 +38,7 @@ function AdminStaffApprovals() {
     fetchPendingStaff();
   }, []);
 
-  // ✅ Approve staff
+  // ✅ Approve
   const approveStaff = async (id) => {
     if (!window.confirm("Approve this staff member?")) return;
 
@@ -43,25 +47,20 @@ function AdminStaffApprovals() {
         verificationStatus: "approved",
       });
 
-      // 🔥 Instantly remove from list (no refetch delay)
-      setStaffList((prev) => prev.filter((staff) => staff._id !== id));
+      setStaffList((prev) => prev.filter((s) => s._id !== id));
     } catch (err) {
-      console.error(err.response?.data || err.message);
       alert(err.response?.data?.message || "Approval failed");
     }
   };
 
-  // ❌ Reject staff
+  // ❌ Reject
   const rejectStaff = async (id) => {
     if (!window.confirm("Reject this staff member?")) return;
 
     try {
       await axiosClient.patch(`/users/staff/${id}/reject`);
-
-      // 🔥 Remove rejected staff from UI
-      setStaffList((prev) => prev.filter((staff) => staff._id !== id));
-    } catch (err) {
-      console.error(err);
+      setStaffList((prev) => prev.filter((s) => s._id !== id));
+    } catch {
       alert("Rejection failed");
     }
   };
@@ -90,12 +89,7 @@ function AdminStaffApprovals() {
 
             <div className="documents">
               {staff.documentUrls?.map((url, i) => (
-                <a
-                  key={i}
-                  href={url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a key={i} href={url} target="_blank" rel="noreferrer">
                   View Document {i + 1}
                 </a>
               ))}
@@ -105,7 +99,6 @@ function AdminStaffApprovals() {
               <button
                 className="approve-btn"
                 onClick={() => approveStaff(staff._id)}
-                disabled={staff.verificationStatus === "approved"}
               >
                 Approve
               </button>

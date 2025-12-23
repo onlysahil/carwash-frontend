@@ -15,7 +15,7 @@ function UploadKYC() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // 🔐 BLOCK PAGE IF KYC ALREADY SUBMITTED
+  // 🔐 CHECK KYC STATUS ON LOAD
   useEffect(() => {
     const checkKycStatus = async () => {
       try {
@@ -23,15 +23,27 @@ function UploadKYC() {
         if (!userId) return;
 
         const res = await axiosClient.get(`/users/${userId}`);
+        const user = res.data;
 
-        // ⏳ Already submitted → go to pending page
-        if (res.data.verificationStatus === "pending") {
-  navigate("/staff/kyc-pending", { replace: true });
-}
+        // ✅ DOCUMENTS ALREADY SUBMITTED → PENDING
+        if (
+          user.documentUrls &&
+          user.documentUrls.length > 0 &&
+          user.verificationStatus === "pending"
+        ) {
+          navigate("/staff/kyc-pending", { replace: true });
+          return;
+        }
 
-if (res.data.verificationStatus === "approved") {
-  navigate(`/staff/profile/${res.data.role}`, { replace: true });
-}
+        // ✅ APPROVED → DASHBOARD
+        if (user.verificationStatus === "approved") {
+          navigate(`/staff/profile/${user.role}`, { replace: true });
+          return;
+        }
+
+        // ❌ REJECTED → ALLOW RE-UPLOAD (STAY HERE)
+        // ❌ NO DOCUMENTS → ALLOW UPLOAD (STAY HERE)
+
       } catch (err) {
         console.error("KYC status check failed", err);
       }
@@ -40,6 +52,7 @@ if (res.data.verificationStatus === "approved") {
     checkKycStatus();
   }, [navigate]);
 
+  // 📤 SUBMIT KYC
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -48,7 +61,7 @@ if (res.data.verificationStatus === "approved") {
     try {
       await axiosClient.patch("/users/staff/upload-documents", form);
 
-      // ⏳ After submit → pending
+      // ⏳ AFTER SUBMIT → PENDING PAGE
       navigate("/staff/kyc-pending", { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || "KYC upload failed");
@@ -93,9 +106,11 @@ if (res.data.verificationStatus === "approved") {
               ...form,
               documentUrls: e.target.value
                 .split(",")
-                .map((url) => url.trim()),
+                .map((url) => url.trim())
+                .filter(Boolean),
             })
           }
+          required
         />
 
         <button disabled={loading}>

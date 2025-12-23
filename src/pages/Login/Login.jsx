@@ -15,70 +15,78 @@ function Login() {
 
   const [error, setError] = useState("");
 
- async function handleSubmit(e) {
-  e.preventDefault();
-  setError("");
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
 
-  try {
-    const result = await login({
-      email: form.email,
-      password: form.password,
-    });
-
-    // FIRST-TIME STAFF
-    if (result?.requiresPasswordSetup) {
-      navigate("/staff/set-password", {
-        state: {
-          token: result.token,
-          email: form.email,
-        },
+    try {
+      const result = await login({
+        email: form.email,
+        password: form.password,
       });
-      return;
-    }
 
-    const role = result.role;
-
-    // ================= STAFF FLOW =================
-    if (role === "detailer" || role === "cleaner" || role === "receptionist") {
-      const profile = await axiosClient.get(
-        `/users/${localStorage.getItem("user_id")}`
-      );
-
-      const user = profile.data;
-
-      if (!user.documentUrls || user.documentUrls.length === 0) {
-        navigate("/staff/upload-kyc");
+      // FIRST-TIME STAFF
+      if (result?.requiresPasswordSetup) {
+        navigate("/staff/set-password", {
+          state: {
+            token: result.token,
+            email: form.email,
+          },
+        });
         return;
       }
 
-      if (user.verificationStatus === "pending") {
-        navigate("/staff/kyc-pending");
-        return;
-      }
+      const role = result.role;
 
-      if (user.verificationStatus === "rejected") {
-        navigate("/staff/upload-kyc");
-        return;
-      }
+      // ================= STAFF FLOW =================
+      if (role === "detailer" || role === "cleaner" || role === "receptionist") {
+        const profile = await axiosClient.get(
+          `/users/${localStorage.getItem("user_id")}`
+        );
 
-      if (user.verificationStatus === "approved") {
-        if (role === "receptionist") {
-          navigate("/reception/dashboard");
+        const user = profile.data;
+
+        if (!user.documentUrls || user.documentUrls.length === 0) {
+          navigate("/staff/upload-kyc");
           return;
         }
 
-        navigate(`/staff/profile/${role}`);
-        return;
+        // 📄 DOCUMENTS UPLOADED BUT PENDING
+        if (!user.documentUrls || user.documentUrls.length === 0) {
+          navigate("/staff/upload-kyc");
+          return;
+        }
+
+        // ⏳ DOCUMENTS SUBMITTED → PENDING
+        if (user.verificationStatus === "pending") {
+          navigate("/staff/kyc-pending");
+          return;
+        }
+
+        // ❌ REJECTED → RE-UPLOAD
+        if (user.verificationStatus === "rejected") {
+          navigate("/staff/upload-kyc");
+          return;
+        }
+
+        // ✅ APPROVED → ALLOW ACCESS
+        if (user.verificationStatus === "approved") {
+          if (role === "receptionist") {
+            navigate("/reception/dashboard");
+          } else {
+            navigate(`/staff/profile/${role}`);
+          }
+          return;
+        }
       }
+
+      // ================= NORMAL USER FLOW =================
+      navigate("/profile");
+
+    } catch (err) {
+      setError(err.message || "Login failed");
     }
-
-    // ================= NORMAL USER FLOW =================
-    navigate("/profile");
-
-  } catch (err) {
-    setError(err.message || "Login failed");
   }
-}
 
 
 
@@ -88,7 +96,7 @@ function Login() {
 
       {/* LOGIN FORM */}
       <div className="login-container">
-        <h1>Login</h1>
+        <h1>LOGIN</h1>
 
         <form className="login-form" onSubmit={handleSubmit}>
           <label>Email</label>

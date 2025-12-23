@@ -23,25 +23,25 @@ function StaffProfile() {
 
 
   useEffect(() => {
-  const storedRole = localStorage.getItem("role");
+    const storedRole = localStorage.getItem("role");
 
-  // 🔒 Not logged in
-  if (!storedRole) {
-    navigate("/login");
-    return;
-  }
+    // 🔒 Not logged in
+    if (!storedRole) {
+      navigate("/login");
+      return;
+    }
 
-  // ❌ User trying to access staff page
-  if (!["detailer", "cleaner", "receptionist"].includes(storedRole)) {
-    navigate("/profile", { replace: true });
-    return;
-  }
+    // ❌ User trying to access staff page
+    if (!["detailer", "cleaner", "receptionist"].includes(storedRole)) {
+      navigate("/profile", { replace: true });
+      return;
+    }
 
-  // ❌ URL role mismatch
-  if (storedRole !== role) {
-    navigate(`/staff/profile/${storedRole}`, { replace: true });
-  }
-}, [navigate, role]);
+    // ❌ URL role mismatch
+    if (storedRole !== role) {
+      navigate(`/staff/profile/${storedRole}`, { replace: true });
+    }
+  }, [navigate, role]);
 
   // -------------------- LOAD STAFF & BOOKINGS --------------------
   useEffect(() => {
@@ -60,6 +60,13 @@ function StaffProfile() {
   const loadStaffProfile = async (staffId) => {
     try {
       const res = await axiosClient.get(`/users/${staffId}`);
+
+      // 🚫 BLOCK UNAPPROVED STAFF
+      if (res.data.verificationStatus !== "approved") {
+        navigate("/staff/kyc-pending", { replace: true });
+        return;
+      }
+
       setStaff(res.data);
 
       setFormData({
@@ -75,19 +82,19 @@ function StaffProfile() {
   };
 
   // Load bookings assigned to staff
- const loadStaffBookings = async (staffId) => {
-  try {
-    const endpoint =
-      role === "cleaner"
-        ? `/bookings/assigned/cleaner/${staffId}`
-        : `/bookings/assigned/detailer/${staffId}`;
+  const loadStaffBookings = async (staffId) => {
+    try {
+      const endpoint =
+        role === "cleaner"
+          ? `/bookings/assigned/cleaner/${staffId}`
+          : `/bookings/assigned/detailer/${staffId}`;
 
-    const res = await axiosClient.get(endpoint);
-    setBookings(res.data || []);
-  } catch (err) {
-    console.error("Failed to load bookings", err);
-  }
-};
+      const res = await axiosClient.get(endpoint);
+      setBookings(res.data || []);
+    } catch (err) {
+      console.error("Failed to load bookings", err);
+    }
+  };
 
   // -------------------- VALIDATION --------------------
   const validate = () => {
@@ -108,7 +115,9 @@ function StaffProfile() {
 
     try {
       const staffId = localStorage.getItem("user_id");
-      const res = await axiosClient.patch(`/staff/${staffId}`, formData);
+      const res = await axiosClient.patch(`/users/${staffId}`, formData);
+
+      
 
       setStaff(res.data);
       setEditing(false);
@@ -118,6 +127,10 @@ function StaffProfile() {
       setMessage("❌ Failed to update profile.");
     }
   };
+
+
+
+
 
   // -------------------- LOGOUT --------------------
   const handleLogout = () => {
@@ -229,21 +242,21 @@ function StaffProfile() {
             </thead>
 
             <tbody>
-  {bookings.map((b) => (
-    <tr key={b._id}>
-      <td>{b.bookingNumber}</td>
-      <td>{b.serviceIds?.map((s) => s.title).join(", ")}</td>
-      <td>{b.vehicleModel}</td>
-      <td>{b.vehicleNumber}</td>
-      <td>{b.location}</td>
-      <td>{new Date(b.date).toLocaleDateString()}</td>
-      <td>{b.time}</td>
-      <td className="status">
-        {role === "cleaner" ? b.cleanerStatus : b.detailerStatus}
-      </td>
-    </tr>
-  ))}
-</tbody>
+              {bookings.map((b) => (
+                <tr key={b._id}>
+                  <td>{b.bookingNumber}</td>
+                  <td>{b.serviceIds?.map((s) => s.title).join(", ")}</td>
+                  <td>{b.vehicleModel}</td>
+                  <td>{b.vehicleNumber}</td>
+                  <td>{b.location}</td>
+                  <td>{new Date(b.date).toLocaleDateString()}</td>
+                  <td>{b.time}</td>
+                  <td className="status">
+                    {role === "cleaner" ? b.cleanerStatus : b.detailerStatus}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         )}
       </div>

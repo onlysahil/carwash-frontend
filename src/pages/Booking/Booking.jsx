@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import Loader from "../../components/Loader/Loader";
+import { useNavigate } from "react-router-dom";
+import ThankYouComponent from "../../components/ThankYouComponent/ThankYouComponent";
+
 import "./Booking.css";
 
 function Booking() {
@@ -8,22 +11,28 @@ function Booking() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
+
+const [isSubmitting, setIsSubmitting] = useState(false);
+const [showThankYou, setShowThankYou] = useState(false);
+
+  const role = localStorage.getItem("role");
   const userId = localStorage.getItem("user_id");
-  const role = localStorage.getItem("role"); // "user" or "receptionist"
 
   const isReceptionist = role === "receptionist";
+  const isCustomer = role === "customer";
 
   const [form, setForm] = useState({
-    customerName: "",
-    customerEmail: "",
-    customerPhone: "",
-    customerPassword: "",
+    customerName: localStorage.getItem("name") || "",
+    customerEmail: localStorage.getItem("email") || "",
+    customerPhone: localStorage.getItem("phone") || "",
     serviceIds: [],
     location: "",
     date: "",
     time: "",
     vehicleModel: "",
     vehicleNumber: "",
+    paymentMethod: "prepaid",
   });
 
   useEffect(() => {
@@ -34,8 +43,7 @@ function Booking() {
     try {
       const res = await axiosClient.get("/services");
       setServices(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Failed to load services");
     } finally {
       setLoading(false);
@@ -48,70 +56,55 @@ function Booking() {
       return s ? sum + s.price : sum;
     }, 0);
 
-  const getMinTime = () => {
-    const today = new Date().toISOString().split("T")[0];
-    if (form.date !== today) return "00:00";
-    const now = new Date();
-    return `${now.getHours().toString().padStart(2, "0")}:${now
-      .getMinutes()
-      .toString()
-      .padStart(2, "0")}`;
-  };
-
   const convertToAMPM = (time24) => {
     if (!time24) return "";
-    let [hour, minute] = time24.split(":");
-    hour = parseInt(hour, 10);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    hour = hour % 12 || 12;
-    return `${hour}:${minute} ${ampm}`;
+    let [h, m] = time24.split(":");
+    h = parseInt(h, 10);
+    const ampm = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    return `${h}:${m} ${ampm}`;
   };
 
-  // ✅ ROLE-BASED PAYLOAD
   async function handleSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const payload = {
-      userId: isReceptionist ? undefined : userId,
-      serviceIds: form.serviceIds,
-      location: form.location,
-      date: form.date,
-      time: convertToAMPM(form.time),
-      vehicleModel: form.vehicleModel,
-      vehicleNumber: form.vehicleNumber,
-      status: "pending",
-      createdBy: userId,
-    };
+  setIsSubmitting(true);
 
-    // 👇 Add customer details ONLY if receptionist
-    if (isReceptionist) {
-      payload.customerName = form.customerName;
-      payload.customerEmail = form.customerEmail;
-      payload.customerPhone = form.customerPhone;
-      payload.customerPassword = form.customerPassword;
-    }
+  const payload = {
+    userId: isCustomer ? userId : null,
+    customerName: form.customerName,
+    customerEmail: form.customerEmail,
+    customerPhone: form.customerPhone,
+    serviceIds: form.serviceIds,
+    location: form.location,
+    date: form.date,
+    time: convertToAMPM(form.time),
+    vehicleModel: form.vehicleModel,
+    vehicleNumber: form.vehicleNumber,
+    bookingStatus: "pending",
+    paymentMethod: form.paymentMethod,
+  };
 
-    try {
-      await axiosClient.post("/bookings", payload);
-      alert("Booking created successfully!");
+  try {
+    await axiosClient.post("/bookings", payload);
 
-      setForm({
-        customerName: "",
-        customerEmail: "",
-        customerPhone: "",
-        customerPassword: "",
-        serviceIds: [],
-        location: "",
-        date: "",
-        time: "",
-        vehicleModel: "",
-        vehicleNumber: "",
-      });
-    } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || "Booking failed");
-    }
+    // 🎉 SHOW THANK YOU SCREEN
+    setShowThankYou(true);
+
+    // ⏳ REDIRECT AFTER 3 SECONDS
+    setTimeout(() => {
+      navigate("/profile");
+    }, 3000);
+  } catch (err) {
+    alert(err.response?.data?.message || "Booking failed");
+  } finally {
+    setIsSubmitting(false);
   }
+}
+
+if (showThankYou) {
+  return <ThankYouComponent />;
+}
 
   if (loading) return <Loader />;
   if (error) return <p className="error">{error}</p>;
@@ -122,7 +115,7 @@ function Booking() {
 
       <form className="booking-form" onSubmit={handleSubmit}>
 
-        {/* 👇 SHOW ONLY FOR RECEPTIONIST */}
+        {/* 👇 CUSTOMER DETAILS ONLY FOR RECEPTIONIST */}
         {isReceptionist && (
           <>
             <label>
@@ -160,31 +153,21 @@ function Booking() {
                 required
               />
             </label>
-
-            <label>
-              Customer Password
-              <input
-                type="password"
-                value={form.customerPassword}
-                onChange={(e) =>
-                  setForm({ ...form, customerPassword: e.target.value })
-                }
-                required
-              />
-            </label>
           </>
         )}
 
-        {/* COMMON FIELDS */}
+        {/* SERVICES */}
         <label>
-          Services
+          Services (Hold Ctrl / Cmd to select multiple)
           <select
             multiple
+            className="service-select"
             value={form.serviceIds}
             onChange={(e) =>
               setForm({
                 ...form,
-                serviceIds: [...e.target.selectedOptions].map(
+                serviceIds: Array.from(
+                  e.target.selectedOptions,
                   (o) => o.value
                 ),
               })
@@ -218,7 +201,7 @@ function Booking() {
             min={new Date().toISOString().split("T")[0]}
             value={form.date}
             onChange={(e) =>
-              setForm({ ...form, date: e.target.value, time: "" })
+              setForm({ ...form, date: e.target.value })
             }
             required
           />
@@ -228,7 +211,6 @@ function Booking() {
           Time
           <input
             type="time"
-            min={form.date ? getMinTime() : "00:00"}
             value={form.time}
             onChange={(e) =>
               setForm({ ...form, time: e.target.value })
@@ -265,7 +247,9 @@ function Booking() {
           <strong>Total Amount: ₹{calculateTotal()}</strong>
         </p>
 
-        <button type="submit">Book Now</button>
+        <button type="submit" disabled={isSubmitting}>
+  {isSubmitting ? "Booking..." : "Book Now"}
+</button>
       </form>
     </div>
   );
