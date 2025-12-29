@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import "./AdminDashboard.css";
 
 function AdminDashboard() {
@@ -16,22 +16,72 @@ function AdminDashboard() {
     fetchDashboardStats();
   }, []);
 
-  async function fetchDashboardStats() {
-    try {
-      const token = localStorage.getItem("access_token");
+ async function fetchDashboardStats() {
+  try {
+    const [bookingRes, usersRes, paymentsRes] = await Promise.all([
+      axiosClient.get("/bookings"),
+      axiosClient.get("/users"),
+      axiosClient.get("/payments"),
+    ]);
 
-      const res = await axios.get(
-        "http://localhost:8000/api/admin/dashboard/",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+    const bookings =
+      bookingRes.data.data || bookingRes.data.bookings || [];
 
-      setStats(res.data);
-    } catch (err) {
-      console.error("Dashboard fetch error", err);
-    }
+    const users =
+      usersRes.data.data || usersRes.data.users || [];
+
+    const payments =
+      paymentsRes.data.data || paymentsRes.data.payments || [];
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const totalBookings = bookings.length;
+
+    const completedBookings = bookings.filter(
+      (b) => b.status === "completed"
+    ).length;
+
+    const pendingBookings = bookings.filter(
+      (b) => b.status === "pending"
+    ).length;
+
+    const todayBookings = bookings.filter(
+      (b) =>
+        (b.createdAt || b.date)?.startsWith(today)
+    ).length;
+
+    const todayCompletedBookings = bookings.filter(
+      (b) =>
+        b.status === "completed" &&
+        (b.createdAt || b.date)?.startsWith(today)
+    ).length;
+
+    const todayPendingBookings = bookings.filter(
+      (b) =>
+        b.status === "pending" &&
+        (b.createdAt || b.date)?.startsWith(today)
+    ).length;
+
+    const totalCustomers = users.filter(
+      (u) => u.role === "customer"
+    ).length;
+
+    const totalRevenue = payments
+      .filter((p) => p.status === "paid")
+      .reduce((sum, p) => sum + Number(p.amount || 0), 0);
+
+    setStats({
+      totalBookings,
+      todayBookings,
+      pendingBookings: todayPendingBookings,
+      completedBookings: todayCompletedBookings,
+      totalRevenue,
+      totalCustomers,
+    });
+  } catch (err) {
+    console.error("Dashboard fetch error", err);
   }
+}
 
   return (
     <div className="admin-dashboard">

@@ -1,21 +1,54 @@
-import { Outlet } from "react-router-dom";
-import ReceptionSidebar from "./ReceptionSidebar";
-import ReceptionNavbar from "./ReceptionNavbar";
-import "./reception.css";
+import { Outlet, NavLink, useNavigate, Navigate } from "react-router-dom";
+import "../layouts/AdminLayout.css"; 
 
 export default function ReceptionLayout() {
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("access_token");
+
+  // 🔒 HARD BLOCK (this fixes everything)
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+
+  function logoutReception() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+
+    navigate("/", { replace: true });
+  }
+
   return (
-    <div className="reception-layout">
+    <div className="admin-layout">
 
-      <ReceptionSidebar />
+      <aside className="admin-sidebar">
 
-      <div className="reception-main">
-        <ReceptionNavbar />
-
-        <div className="reception-content">
-          <Outlet />
+        <div
+          className="admin-logo"
+          onClick={() => navigate("/reception/dashboard")}
+        >
+          <img src="/images/logo.png" alt="Reception Logo" />
         </div>
-      </div>
+
+        <ul className="admin-menu">
+          <li><NavLink to="/reception/dashboard" end>Dashboard</NavLink></li>
+          <li><NavLink to="/reception/approvals">Appointments</NavLink></li>
+          <li><NavLink to="/reception/staff">Staff</NavLink></li>
+          <li><NavLink to="/reception/users">Users</NavLink></li>
+          <li><NavLink to="/reception/packages">Packages</NavLink></li>
+          <li><NavLink to="/reception/services">Services</NavLink></li>
+          <li><NavLink to="/reception/bookings">Create Booking</NavLink></li>
+        </ul>
+
+        <button className="admin-logout-btn" onClick={logoutReception}>
+          Logout
+        </button>
+      </aside>
+
+      <main className="admin-main">
+        <Outlet />
+      </main>
+
     </div>
   );
 }

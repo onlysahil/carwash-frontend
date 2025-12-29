@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
 import axiosClient from "../../api/axiosClient";
 import Loader from "../../components/Loader/Loader";
 import { useNavigate } from "react-router-dom";
 import ThankYouComponent from "../../components/ThankYouComponent/ThankYouComponent";
-
 import "./Booking.css";
 
 function Booking() {
+  const location = useLocation();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
-const [isSubmitting, setIsSubmitting] = useState(false);
-const [showThankYou, setShowThankYou] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
 
   const role = localStorage.getItem("role");
   const userId = localStorage.getItem("user_id");
@@ -52,8 +54,8 @@ const [showThankYou, setShowThankYou] = useState(false);
 
   const calculateTotal = () =>
     form.serviceIds.reduce((sum, id) => {
-      const s = services.find((srv) => srv._id === id);
-      return s ? sum + s.price : sum;
+      const srv = services.find((s) => s._id === id);
+      return srv ? sum + srv.price : sum;
     }, 0);
 
   const convertToAMPM = (time24) => {
@@ -65,8 +67,20 @@ const [showThankYou, setShowThankYou] = useState(false);
     return `${h}:${m} ${ampm}`;
   };
 
-  async function handleSubmit(e) {
+async function handleSubmit(e) {
   e.preventDefault();
+
+  const token = localStorage.getItem("access_token");
+
+  // 🚨 NOT LOGGED IN
+  if (!token) {
+    navigate("/login", {
+      state: {
+        message: "Please login or create an account to book a service",
+      },
+    });
+    return;
+  }
 
   setIsSubmitting(true);
 
@@ -87,11 +101,9 @@ const [showThankYou, setShowThankYou] = useState(false);
 
   try {
     await axiosClient.post("/bookings", payload);
-
-    // 🎉 SHOW THANK YOU SCREEN
     setShowThankYou(true);
+    
 
-    // ⏳ REDIRECT AFTER 3 SECONDS
     setTimeout(() => {
       navigate("/profile");
     }, 3000);
@@ -102,156 +114,181 @@ const [showThankYou, setShowThankYou] = useState(false);
   }
 }
 
-if (showThankYou) {
-  return <ThankYouComponent />;
-}
-
+  if (showThankYou) return <ThankYouComponent />;
   if (loading) return <Loader />;
   if (error) return <p className="error">{error}</p>;
 
   return (
-    <div className="booking-page">
-      <h1>Create Booking</h1>
+    <>
 
-      <form className="booking-form" onSubmit={handleSubmit}>
+    {location.state?.message && (
+  <p className="login-warning">
+    {location.state.message}
+  </p>
+)}
+      {/* ===== HERO BANNER ===== */}
+      <div className="booking-hero">
+        <h1>Booking</h1>
+      </div>
 
-        {/* 👇 CUSTOMER DETAILS ONLY FOR RECEPTIONIST */}
-        {isReceptionist && (
-          <>
-            <label>
-              Customer Name
-              <input
-                type="text"
-                value={form.customerName}
-                onChange={(e) =>
-                  setForm({ ...form, customerName: e.target.value })
-                }
-                required
-              />
-            </label>
+      {/* ===== BOOKING CARD ===== */}
+      <div className="booking-page">
+        <form className="booking-form" onSubmit={handleSubmit}>
+          {/* CUSTOMER DETAILS (RECEPTIONIST ONLY) */}
+          {isReceptionist && (
+            <>
+              <label>
+                Customer Name
+                <input
+                  type="text"
+                  value={form.customerName}
+                  onChange={(e) =>
+                    setForm({ ...form, customerName: e.target.value })
+                  }
+                  required
+                />
+              </label>
 
-            <label>
-              Customer Email
-              <input
-                type="email"
-                value={form.customerEmail}
-                onChange={(e) =>
-                  setForm({ ...form, customerEmail: e.target.value })
-                }
-                required
-              />
-            </label>
+              <label>
+                Customer Email
+                <input
+                  type="email"
+                  value={form.customerEmail}
+                  onChange={(e) =>
+                    setForm({ ...form, customerEmail: e.target.value })
+                  }
+                  required
+                />
+              </label>
 
-            <label>
-              Customer Phone
-              <input
-                type="tel"
-                value={form.customerPhone}
-                onChange={(e) =>
-                  setForm({ ...form, customerPhone: e.target.value })
-                }
-                required
-              />
-            </label>
-          </>
-        )}
+              <label>
+                Customer Phone
+                <input
+                  type="tel"
+                  value={form.customerPhone}
+                  onChange={(e) =>
+                    setForm({ ...form, customerPhone: e.target.value })
+                  }
+                  required
+                />
+              </label>
+            </>
+          )}
 
-        {/* SERVICES */}
-        <label>
-          Services (Hold Ctrl / Cmd to select multiple)
-          <select
-            multiple
-            className="service-select"
-            value={form.serviceIds}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                serviceIds: Array.from(
-                  e.target.selectedOptions,
-                  (o) => o.value
-                ),
-              })
-            }
-            required
-          >
-            {services.map((srv) => (
-              <option key={srv._id} value={srv._id}>
-                {srv.title} — ₹{srv.price}
-              </option>
-            ))}
-          </select>
-        </label>
+          {/* ===== SERVICES CHECKBOX CARDS ===== */}
 
-        <label>
-          Location
-          <input
-            type="text"
-            value={form.location}
-            onChange={(e) =>
-              setForm({ ...form, location: e.target.value })
-            }
-            required
-          />
-        </label>
+          <h1>Book A Service</h1>
+          <label className="service-label">Services</label>
 
-        <label>
-          Date
-          <input
-            type="date"
-            min={new Date().toISOString().split("T")[0]}
-            value={form.date}
-            onChange={(e) =>
-              setForm({ ...form, date: e.target.value })
-            }
-            required
-          />
-        </label>
+          <div className="service-grid">
+            {services.map((srv) => {
+              const selected = form.serviceIds.includes(srv._id);
 
-        <label>
-          Time
-          <input
-            type="time"
-            value={form.time}
-            onChange={(e) =>
-              setForm({ ...form, time: e.target.value })
-            }
-            required
-          />
-        </label>
+              return (
+                <div
+                  key={srv._id}
+                  className={`service-card ${selected ? "selected" : ""}`}
+                  onClick={() =>
+                    setForm({
+                      ...form,
+                      serviceIds: selected
+                        ? form.serviceIds.filter((id) => id !== srv._id)
+                        : [...form.serviceIds, srv._id],
+                    })
+                  }
+                >
+                  <div className="service-info">
+                    <p className="service-title">{srv.title}</p>
+                    <span className="service-price">₹{srv.price}</span>
+                  </div>
 
-        <label>
-          Vehicle Model
-          <input
-            type="text"
-            value={form.vehicleModel}
-            onChange={(e) =>
-              setForm({ ...form, vehicleModel: e.target.value })
-            }
-            required
-          />
-        </label>
+                  <input type="checkbox" checked={selected} readOnly />
+                </div>
+              );
+            })}
+          </div>
 
-        <label>
-          Vehicle Number
-          <input
-            type="text"
-            value={form.vehicleNumber}
-            onChange={(e) =>
-              setForm({ ...form, vehicleNumber: e.target.value })
-            }
-            required
-          />
-        </label>
+          {/* LOCATION */}
+          <label>
+            Location
+            <input
+              type="text"
+              placeholder="Enter Location"
+              value={form.location}
+              onChange={(e) =>
+                setForm({ ...form, location: e.target.value })
+              }
+              required
+            />
+          </label>
 
-        <p>
-          <strong>Total Amount: ₹{calculateTotal()}</strong>
-        </p>
+          {/* DATE */}
+          <label>
+            Date
+            <input
+              type="date"
+              min={new Date().toISOString().split("T")[0]}
+              value={form.date}
+              onChange={(e) =>
+                setForm({ ...form, date: e.target.value })
+              }
+              required
+            />
+          </label>
 
-        <button type="submit" disabled={isSubmitting}>
-  {isSubmitting ? "Booking..." : "Book Now"}
-</button>
-      </form>
-    </div>
+          {/* TIME */}
+          <label>
+            Time
+            <input
+              type="time"
+              value={form.time}
+              onChange={(e) =>
+                setForm({ ...form, time: e.target.value })
+              }
+              required
+            />
+          </label>
+
+          {/* VEHICLE */}
+          <label>
+            Vehicle Model
+            <input
+              type="text"
+              placeholder="Enter Vehicle Model"
+              value={form.vehicleModel}
+              onChange={(e) =>
+                setForm({ ...form, vehicleModel: e.target.value })
+              }
+              required
+            />
+          </label>
+
+          <label>
+            Vehicle Number
+            <input
+              type="text"
+              placeholder="Enter Vehicle Number"
+              value={form.vehicleNumber}
+              onChange={(e) =>
+                setForm({ ...form, vehicleNumber: e.target.value })
+              }
+              required
+            />
+          </label>
+
+          {/* TOTAL */}
+          <p>
+            Total Amount : ₹{calculateTotal()}
+          </p>
+
+          {/* SUBMIT */}
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Booking..." : "Create Booking"}
+          </button>
+          
+        </form>
+      </div>
+    </>
   );
 }
 

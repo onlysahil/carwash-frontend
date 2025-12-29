@@ -1,100 +1,183 @@
-/* ============================
-   BOOKING PAGE CONTAINER
-============================ */
-
-.booking-form button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+.login-warning {
+  background: #fff3cd;
+  color: #856404;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.service-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 6px;
 }
 
-
-.service-select {
-  height: 160px;
+/* Scroll container */
+.service-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 200px;
   overflow-y: auto;
-  background: #fff;
+  padding-right: 6px;
+}
+
+/* Individual card */
+.service-card {
+  background: #f4f5f7;
+  border-radius: 14px;
+  padding: 0px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   cursor: pointer;
+  transition: all 0.25s ease;
+  border: 2px solid transparent;
 }
 
-.service-select option {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+/* Hover */
+.service-card:hover {
+  background: #eaecef;
 }
 
-.service-select option:checked {
+/* Selected state */
+.service-card.selected {
   background: #0b355e;
+  border-color: #0b355e;
+}
+
+/* Text container */
+.service-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Title */
+.service-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Price */
+.service-price {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Selected text color */
+.service-card.selected .service-title,
+.service-card.selected .service-price {
+  color: #ffffff;
+}
+
+/* Checkbox */
+.service-card input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #ffffff;
+  pointer-events: none; /* card click controls selection */
+}
+
+.booking-hero {
+  width: 100%;
+  max-width: 1627px;
+  height: 230px;
+  margin: 0px auto -80px;
+  background: url(../../../public/images/bookingbanner.png) no-repeat;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.booking-hero h1 {
   color: #fff;
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: 1px;
 }
 
 
+/* ============================
+   BOOKING CARD
+============================ */
 .booking-page {
-  width: 90%;
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 30px;
+  width: 100%;
+  max-width: 522px;
+  margin: 26px auto 60px;
+  padding: 26px 24px 28px;
   background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.15);
   font-family: "Lexend", sans-serif;
+  position: relative;
+  z-index: 2;
 }
 
 .booking-page h1 {
-  text-align: center;
-  font-size: 30px;
-  font-weight: 700;
-  margin-bottom: 25px;
-  color: #0b355e;
+      color: #212121;
+    font-weight: 600;
+    text-align: center;
+    font-size: 32px;
 }
 
+
 /* ============================
-   FORM STYLING
+   FORM
 ============================ */
 .booking-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 }
 
 .booking-form label {
-  display: flex;
-  flex-direction: column;
-  font-size: 16px;
+  display: contents;
+  font-size: 13px;
   font-weight: 600;
-  color: #333;
+  color: #444;
 }
 
-/* Inputs / Select */
+/* INPUTS */
 .booking-form input,
 .booking-form select {
-  margin-top: 8px;
-  padding: 12px 14px;
-  font-size: 15px;
+  margin-top: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
   border-radius: 10px;
-  border: 1px solid #d0d0d0;
-  background: #fafafa;
+  border: none;
+  background: #f3f3f3;
   outline: none;
-  transition: all 0.2s ease;
+}
+
+.booking-form input::placeholder {
+  color: #999;
 }
 
 .booking-form input:focus,
 .booking-form select:focus {
-  border-color: #0b355e;
-  box-shadow: 0 0 0px 2px rgba(11, 53, 94, 0.2);
   background: #fff;
+  box-shadow: 0 0 0 2px rgba(11, 53, 94, 0.2);
 }
 
-/* MULTIPLE SELECT BOX */
-.booking-form select[multiple] {
-  height: 140px;
-}
+
+
+
 
 /* ============================
    TOTAL AMOUNT
 ============================ */
 .booking-form p {
-  font-size: 18px;
-  font-weight: 700;
-  margin-top: 10px;
-  color: #0b355e;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: right;
+  color: #000;
+  margin-top: 8px;
 }
 
 
@@ -103,20 +186,24 @@
 ============================ */
 .booking-form button {
   margin-top: 10px;
-  padding: 14px;
-  font-size: 18px;
-  background: #0b355e;
+  padding: 12px;
+  font-size: 15px;
+  background: #a30000;
   color: #ffffff;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   transition: 0.25s;
 }
 
 .booking-form button:hover {
-  background: #082845;
-  transform: translateY(-1px);
+  background: #7d0000;
+}
+
+.booking-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 
@@ -124,16 +211,16 @@
    RESPONSIVE
 ============================ */
 @media (max-width: 600px) {
+  .booking-hero {
+    height: 110px;
+    margin-bottom: -70px;
+  }
+
+  .booking-hero h1 {
+    font-size: 28px;
+  }
+
   .booking-page {
-    padding: 20px;
-  }
-
-  .booking-form input,
-  .booking-form select {
-    font-size: 14px;
-  }
-
-  .booking-form button {
-    font-size: 16px;
+    margin: 0 14px 40px;
   }
 }

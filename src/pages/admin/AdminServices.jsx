@@ -6,6 +6,8 @@ function AdminServices() {
   const [services, setServices] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+
 
   const [form, setForm] = useState({
     title: "",
@@ -58,7 +60,7 @@ function AdminServices() {
   }
 
   // Add or Update Service
-  async function handleSubmit(e) {
+ async function handleSubmit(e) {
   e.preventDefault();
 
   const payload = {
@@ -73,23 +75,25 @@ function AdminServices() {
     features: form.features
       ? form.features.split(",").map(f => f.trim())
       : [],
-    images: form.images // will be array of strings
+    images: form.images
   };
 
   try {
     if (isEditing) {
-      await axios.put(`/services/${editId}`, payload);
+      await axios.patch(`/services/${editId}`, payload); // ✅ FIXED
     } else {
       await axios.post("/services", payload);
     }
 
     resetForm();
+    setShowForm(false);
     loadServices();
   } catch (err) {
     console.error(err);
     alert("Failed to save service");
   }
 }
+
 
   function resetForm() {
     setForm({
@@ -116,9 +120,10 @@ function AdminServices() {
     }
   }
 
- function editService(service) {
+  function editService(service) {
   setIsEditing(true);
   setEditId(service._id);
+  setShowForm(true); // ✅ THIS WAS MISSING
 
   setForm({
     title: service.title,
@@ -129,105 +134,132 @@ function AdminServices() {
     discountPercent: service.discountPercent || "",
     finalPrice: service.finalPrice || "",
     features: service.features?.join(", ") || "",
-    images: service.images || [] // now array of URLs
+    images: service.images || []
   });
 }
   return (
 
+    
+
     <div className="admin-services-page">
-      <h1>{isEditing ? "Edit Service" : "Add Service"}</h1>
+      <div className="services-header">
+        <h1>All Services</h1>
 
-      <form className="admin-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Title"
-          value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-          required
-        />
-
-        <textarea
-          placeholder="Description"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          required
-        />
-
-        <input
-          type="number"
-          placeholder="Price"
-          value={form.price}
-          onChange={(e) => setForm({ ...form, price: e.target.value })}
-          required
-        />
-
-        <input
-          type="number"
-          placeholder="Duration Minutes"
-          value={form.durationMinutes}
-          onChange={(e) => setForm({ ...form, durationMinutes: e.target.value })}
-          required
-        />
-
-        <select
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
+        <button
+          className="add-service-btn"
+          onClick={() => {
+            if (showForm) resetForm();
+            setShowForm(!showForm);
+          }}
         >
-          <option value="interior">Interior</option>
-          <option value="exterior">Exterior</option>
-        </select>
-
-        <input
-          type="number"
-          placeholder="Discount %"
-          value={form.discountPercent}
-          onChange={(e) => setForm({ ...form, discountPercent: e.target.value })}
-        />
-
-        <input
-          type="text"
-          placeholder="Features (comma separated)"
-          value={form.features}
-          onChange={(e) => setForm({ ...form, features: e.target.value })}
-        />
-
-        <input
-  type="text"
-  placeholder="Image URLs (comma separated)"
-  value={form.images.join(", ")}
-  onChange={(e) =>
-    setForm({ ...form, images: e.target.value.split(",").map(v => v.trim()) })
-  }
-/>
-        <div className="image-preview">
-  {form.images.map((img, idx) => (
-    <img key={idx} src={img} alt="preview" />
-  ))}
-</div>
-
-        <p>Final Price: ₹{calculateFinalPrice()}</p>
-
-        <button className="admin-btn" type="submit">
-          {isEditing ? "Update Service" : "Add Service"}
+          {showForm ? "Close Form" : "+ Add Service"}
         </button>
+      </div>
 
-        {isEditing && (
-          <button className="admin-btn cancel" type="button" onClick={resetForm}>
-            Cancel
+      {showForm && (
+        <>
+
+       
+
+        <form className="admin-form" onSubmit={handleSubmit}>
+           <h1 className="add-service">Add service</h1>
+          <input
+            type="text"
+            placeholder="Title"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            required
+          />
+
+          <textarea
+            placeholder="Description"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            required
+          />
+
+          <input
+            type="number"
+            placeholder="Price"
+            value={form.price}
+            onChange={(e) => setForm({ ...form, price: e.target.value })}
+            required
+          />
+
+          <input
+            type="number"
+            placeholder="Duration Minutes"
+            value={form.durationMinutes}
+            onChange={(e) => setForm({ ...form, durationMinutes: e.target.value })}
+            required
+          />
+
+          <select
+            value={form.category}
+            onChange={(e) => setForm({ ...form, category: e.target.value })}
+          >
+            <option value="interior">Interior</option>
+            <option value="exterior">Exterior</option>
+          </select>
+
+          <input
+            type="number"
+            placeholder="Discount %"
+            value={form.discountPercent}
+            onChange={(e) => setForm({ ...form, discountPercent: e.target.value })}
+          />
+
+          <input
+            type="text"
+            placeholder="Features (comma separated)"
+            value={form.features}
+            onChange={(e) => setForm({ ...form, features: e.target.value })}
+          />
+
+          <input
+            type="text"
+            placeholder="Image URLs (comma separated)"
+            value={form.images.join(", ")}
+            onChange={(e) =>
+              setForm({ ...form, images: e.target.value.split(",").map(v => v.trim()) })
+            }
+          />
+          <div className="image-preview">
+            {form.images.map((img, idx) => (
+              <img key={idx} src={img} alt="preview" />
+            ))}
+          </div>
+
+          <p>Final Price: ₹{calculateFinalPrice()}</p>
+
+          <button className="admin-btn" type="submit">
+            {isEditing ? "Update Service" : "Add Service"}
           </button>
-        )}
-      </form>
+
+          {/* <button
+            type="button"
+            className="admin-btn cancel"
+            onClick={() => {
+              resetForm();
+              setShowForm(false);
+            }}
+          >
+            Close
+          </button> */}
+        </form>
+        </>
+      )}
 
       {/* <h2>All Services</h2> */}
 
       <table className="admin-table">
         <thead>
           <tr>
-            {/* <th>Title</th> */}
-            {/* <th>Price</th> */}
-            {/* <th>Category</th> */}
-            {/* <th>Images</th> */}
-            {/* <th>Actions</th> */}
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Images</th>
+            <th>Actions</th>
           </tr>
         </thead>
 

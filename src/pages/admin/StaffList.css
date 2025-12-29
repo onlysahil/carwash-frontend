@@ -1,156 +1,148 @@
+.staff-list-page {
+  padding: 30px;
+  background: #f6f7f9;
+  font-family: "Lexend", sans-serif;
+}
+
 /* ================================
-   STAFF LIST PAGE
+   HEADER
 ================================ */
-
-
-
-
-
-
-
-
 .staff-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-.controls {
+.staff-header h2 {
+  margin-bottom: 5px;
+    font-size: 24px;
+    font-weight: 500;
+    color: black;
+}
+
+/* FILTERS */
+.filters {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
 }
 
-/* SEARCH INPUT */
 .search-input {
   padding: 8px 14px;
-  width: 250px;
-  border: 1px solid #ccc;
+  width: 240px;
+  border: 1px solid #d0d0d0;
   border-radius: 6px;
+  font-size: 13px;
   outline: none;
-  transition: 0.3s;
 }
 
-.search-input:focus {
-  border-color: #007bff;
-}
-
-/* FILTER BUTTONS */
-.filters button {
-  margin-right: 8px;
-  padding: 8px 14px;
-  background: #ddd;
-  border: none;
+.role-dropdown {
+  padding: 7px 12px;
+  font-size: 13px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: #fff;
   cursor: pointer;
-  border-radius: 6px;
-}
-
-.active-filter {
-  background: #007bff;
-  color: white;
-}
-
-.pagination button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.staff-list-page {
-  width: 95%;
-  max-width: 1400px;
-  margin: 40px auto;
-  font-family: "Lexend", sans-serif;
-  color: #333;
-}
-
-.staff-list-page h2 {
-  font-size: 28px;
-  font-weight: 600;
-  margin-bottom: 25px;
-  text-align: left;
-  color: #222;
 }
 
 /* ================================
-   TABLE STYLES
+   TABLE
 ================================ */
 .staff-table {
   width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-  border-radius: 12px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fffaf3;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
 }
 
+/* HEADER ROW */
 .staff-table thead tr {
-  background: #1f2c3a;
+  background: #103B65;
+}
+
+.staff-table th {
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
   color: #fff;
   text-align: left;
 }
 
-.staff-table th,
+/* BODY ROWS */
 .staff-table td {
-  padding: 14px 18px;
-  font-size: 15px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #222;
+  border-bottom: 1px solid #eee;
 }
 
-.staff-table tbody tr {
-  border-bottom: 1px solid #eaeaea;
-}
-
-.staff-table tbody tr:hover {
-  background: #f6f9fc;
+.staff-table tr:last-child td {
+  border-bottom: none;
 }
 
 /* ================================
-   BUTTONS
+   ACTION BUTTONS
 ================================ */
-.staff-table button {
-  padding: 6px 14px;
+.staff-table td button {
+  padding: 12px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
   margin-right: 6px;
+}
+
+/* VIEW */
+.staff-table td button:nth-child(1) {
+  background: #0d6efd;
+  color: #fff;
+}
+
+/* EDIT */
+.staff-table td button:nth-child(2) {
+  background: #f5a623;
+  color: #fff;
+}
+
+/* DELETE */
+.staff-table td button:nth-child(3) {
+  background: #c62828;
+  color: #fff;
+}
+
+/* ================================
+   PAGINATION
+================================ */
+.pagination {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+}
+
+.pagination button {
+  padding: 6px 14px;
+  background: #0b2d52;
+  color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: 0.25s ease;
+  font-size: 13px;
 }
 
-/* View Button */
-.staff-table button:nth-child(1) {
-  background: #007bff;
-  color: #fff;
-}
-.staff-table button:nth-child(1):hover {
-  background: #0066d3;
-}
-
-/* Edit Button */
-.staff-table button:nth-child(2) {
-  background: #ffb703;
-  color: #222;
-}
-.staff-table button:nth-child(2):hover {
-  background: #e3a202;
-}
-
-/* Delete Button */
-.staff-table button:nth-child(3) {
-  background: #ef233c;
-  color: #fff;
-}
-.staff-table button:nth-child(3):hover {
-  background: #c9152c;
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ================================
    RESPONSIVE
 ================================ */
-
 @media (max-width: 768px) {
   .staff-table thead {
     display: none;
@@ -158,8 +150,8 @@
 
   .staff-table tr {
     display: block;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
+    margin-bottom: 12px;
+    background: #fff;
     border-radius: 10px;
     padding: 10px;
   }
@@ -167,74 +159,17 @@
   .staff-table td {
     display: flex;
     justify-content: space-between;
-    padding: 10px 12px;
-    font-size: 14px;
+    padding: 8px 10px;
+    border-bottom: none;
   }
 
   .staff-table td::before {
     content: attr(data-label);
     font-weight: 600;
-    color: #222;
   }
 
-  .staff-table button {
-    margin: 5px 0;
+  .staff-table td button {
     width: 100%;
+    margin-bottom: 6px;
   }
-}
-
-
-.staff-list-page {
-  padding: 20px;
-}
-
-.staff-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.filters button {
-  margin-right: 10px;
-  padding: 8px 14px;
-  border: none;
-  background: #ddd;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.filters .active-filter {
-  background: #007bff;
-  color: white;
-}
-
-.staff-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.staff-table th,
-.staff-table td {
-  padding: 12px;
-  border-bottom: 1px solid #ccc;
-}
-
-.staff-table button {
-  margin-right: 6px;
-  padding: 6px 10px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.pagination {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.pagination button {
-  margin: 0 10px;
-  padding: 8px 14px;
 }

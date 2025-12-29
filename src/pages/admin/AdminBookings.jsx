@@ -94,7 +94,7 @@ function AdminBookings() {
           </tr>
         </thead>
 
-        <tbody>
+        <tbody   style={{ backgroundColor: "center" }}>
           {bookings.length === 0 ? (
             <tr>
               <td colSpan="8" style={{ textAlign: "center" }}>No bookings found</td>

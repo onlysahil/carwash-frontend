@@ -84,7 +84,10 @@ function Login() {
       navigate("/profile");
 
     } catch (err) {
-      setError(err.message || "Login failed");
+      const backendMessage =
+        err.response?.data?.message || "Invalid email or password";
+
+      setError(backendMessage);
     }
   }
 
