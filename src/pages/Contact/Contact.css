@@ -68,6 +68,29 @@
   font-size: 20px;
 }
 
+/* Circle icons */
+.icon-circle1 {
+  width: 94px;
+  height: 94px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #e2e6ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.3s ease;
+}
+ 
+.icon-circle:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+ 
+/* .icon-circle svg {
+  width: 48px;
+  height: 48px;
+  color: #103B65;
+} */
+
 .info-label {
   font-size: 24px;
     font-weight: 500;

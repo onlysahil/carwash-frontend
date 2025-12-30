@@ -90,7 +90,7 @@ function AdminBookings() {
             <th>Vehicle</th>
             <th>Total</th>
             <th>Status</th>
-            <th>Actions</th>
+            {/* <th>Actions</th> */}
           </tr>
         </thead>
 
@@ -121,7 +121,7 @@ function AdminBookings() {
                   {b.bookingStatus}
                 </td>
 
-                <td>
+                {/* <td>
                   {b.bookingStatus !== "completed" && b.bookingStatus !== "cancelled" && (
                     <button
                       className="admin-btn"
@@ -139,7 +139,7 @@ function AdminBookings() {
                       Cancel
                     </button>
                   )}
-                </td>
+                </td> */}
               </tr>
             ))
           )}

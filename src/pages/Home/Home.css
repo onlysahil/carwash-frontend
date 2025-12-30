@@ -79,6 +79,26 @@
   }
 }
 
+@media (max-width: 480px) {
+  .hero {
+    padding: 24px 16px;
+  }
+
+  .hero-left h1 {
+    font-size: 40px;
+  }
+
+  .hero-left p {
+    font-size: 20px;
+  }
+
+  .hero-car {
+    max-width: 100%;
+  }
+}
+
+
+
 
 
 
@@ -131,28 +151,7 @@
   margin: 0;
 }
  
-/* Circle icons */
-.icon-circle1 {
-  width: 94px;
-  height: 94px;
-  border-radius: 50%;
-  background: white;
-  border: 2px solid #e2e6ea;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: box-shadow 0.3s ease;
-}
- 
-.icon-circle:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
- 
-.icon-circle svg {
-  width: 48px;
-  height: 48px;
-  color: #103B65;
-}
+
  
 /* Arrows */
 .arrow {
@@ -268,17 +267,86 @@
   margin: 15px 0;
 }
  
-@media (max-width: 900px) {
-  .wwd {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .wwd-img {
-    width: 80%;
+@media (max-width: 1200px) {
+  .wwd-content h2 {
+    font-size: 56px;
   }
 
   .wwd-content {
+    max-width: 50%;
+  }
+}
+
+/* ================= TABLET ================= */
+@media (max-width: 992px) {
+  .wwd {
+    flex-direction: column;
+    text-align: center;
+    margin: 60px auto;
+  }
+
+  .wwd-content {
+    max-width: 100%;
+  }
+
+  .wwd-content h2 {
+    font-size: 44px;
+  }
+
+  .wwd-content p {
+    font-size: 18px;
+  }
+
+  .wwd-img {
+    max-width: 420px;
+  }
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .wwd {
+    margin: 50px auto;
+    gap: 30px;
+  }
+
+  .wwd-content h2 {
+    font-size: 34px;
+  }
+
+  .wwd-content p {
+    font-size: 16px;
+  }
+
+  .border-bt1 {
+    max-width: 280px;
+  }
+
+  .wwd-img {
+    max-width: 90%;
+  }
+}
+
+/* ================= SMALL MOBILE ================= */
+@media (max-width: 480px) {
+  .wwd {
+    margin: 40px auto;
+    padding: 0 16px;
+  }
+
+  .wwd-content h2 {
+    font-size: 28px;
+  }
+
+  .wwd-content p {
+    text-align: justify;
+    font-size: 15px;
+  }
+
+  .border-bt1 {
+    max-width: 220px;
+  }
+
+  .wwd-img {
     max-width: 100%;
   }
 }

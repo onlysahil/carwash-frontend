@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosClient from "../../api/axiosClient";
 import "./Navbar.css";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleProfileClick = async () => {
+  const handleProfileClick = () => {
     const userId = localStorage.getItem("user_id");
     const role = localStorage.getItem("role");
 
@@ -17,48 +16,22 @@ export default function Navbar() {
       return;
     }
 
-    try {
-      const res = await axiosClient.get(`/users/${userId}`);
-      const user = res.data;
-
-      // ================= STAFF FLOW =================
-      if (["cleaner", "detailer", "receptionist"].includes(role)) {
-
-        // ❌ No KYC submitted
-        if (!user.documentUrls || user.documentUrls.length === 0) {
-          navigate("/staff/upload-kyc");
-          return;
-        }
-
-        // ⏳ Pending approval
-        if (user.verificationStatus === "pending") {
-          navigate("/staff/kyc-pending");
-          return;
-        }
-
-        // ❌ Rejected
-        if (user.verificationStatus === "rejected") {
-          navigate("/staff/upload-kyc");
-          return;
-        }
-
-        // ✅ Approved
-        if (user.verificationStatus === "approved") {
-          if (role === "receptionist") {
-            navigate("/reception/dashboard");
-          } else {
-            navigate(`/staff/profile/${role}`);
-          }
-          return;
-        }
-      }
-
-      // ================= NORMAL USER =================
+    // ================= ROLE BASED REDIRECT =================
+    if (role === "admin") {
+      navigate("/admin/dashboard");
+    }
+    else if (role === "receptionist") {
+      navigate("/reception/dashboard");
+    }
+    else if (role === "detailer") {
+      navigate("/staff/profile/detailer");
+    }
+    else if (role === "cleaner") {
+      navigate("/staff/profile/cleaner");
+    }
+    else {
+      // Normal customer
       navigate("/profile");
-
-    } catch (err) {
-      console.error("Profile redirect failed", err);
-      navigate("/login");
     }
   };
 
@@ -81,7 +54,7 @@ export default function Navbar() {
           <li><Link to="/signup">Signup</Link></li>
         </ul>
 
-        {/* ✅ SAFE USER ICON */}
+        {/* 👤 USER ICON */}
         <button
           type="button"
           className="user-icon"

@@ -6,26 +6,31 @@ import "./AddStaff.css";
 function AddStaff() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [role, setRole] = useState("receptionist");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
 
+  // ✅ KYC
+  const [aadhaarNumber, setAadhaarNumber] = useState("");
+  const [panNumber, setPanNumber] = useState("");
+  const [documentUrls, setDocumentUrls] = useState("");
+
+  const [staffList, setStaffList] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [staffList, setStaffList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Fetch ALL staff (exclude admin)
+  // ---------------- LOAD STAFF ----------------
   const loadStaff = async () => {
     try {
       const res = await axiosClient.get("/users");
-
-      const onlyStaff = res.data.filter(
-        (u) => u.role !== "admin"
+      const onlyStaff = res.data.filter((u) =>
+        ["receptionist", "detailer", "cleaner"].includes(u.role)
       );
-
       setStaffList(onlyStaff);
     } catch (err) {
-      console.error("Failed to load staff", err);
+      console.error(err);
     }
   };
 
@@ -33,92 +38,95 @@ function AddStaff() {
     loadStaff();
   }, []);
 
-  // Add Staff
+  // ---------------- ADD STAFF (SINGLE API) ----------------
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setLoading(true);
 
     try {
-      const res = await axiosClient.post("/users/staff", {
+      await axiosClient.post("/users/staff", {
         name,
         email,
+        password,
         role,
         phone,
         address,
+        aadhaarNumber,
+        panNumber,
+        documentUrls: documentUrls
+          ? documentUrls.split(",").map((d) => d.trim())
+          : [],
       });
 
-      if (res.status === 201) {
-        setSuccess(
-          "Staff created successfully. Password setup link sent to email."
-        );
+      setSuccess(
+        `✅ Staff created successfully
 
-        setName("");
-        setEmail("");
-        setRole("receptionist");
-        setPhone("");
-        setAddress("");
+Login Email: ${email}
+Password: ${password}`
+      );
 
-        loadStaff();
-      }
+      // RESET FORM
+      setName("");
+      setEmail("");
+      setPassword("");
+      setRole("receptionist");
+      setPhone("");
+      setAddress("");
+      setAadhaarNumber("");
+      setPanNumber("");
+      setDocumentUrls("");
+
+      loadStaff();
     } catch (err) {
-      console.error("Add Staff Error:", err.response?.data);
+      console.error(err);
       setError(err.response?.data?.message || "Failed to add staff");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="add-staff-wrapper">
-      {/* ADD STAFF FORM */}
+
+      {/* ---------------- ADD STAFF FORM ---------------- */}
       <div className="add-staff-card">
         <h2>Add New Staff</h2>
 
         {error && <p className="error-msg">{error}</p>}
-        {success && <p className="success-msg">{success}</p>}
+        {success && <pre className="success-msg">{success}</pre>}
 
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label>Name</label>
-            <input
-              type="text"
-              placeholder="Enter staff name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+            <input value={name} onChange={(e) => setName(e.target.value)} required />
           </div>
 
           <div className="input-group">
             <label>Email</label>
+            <input value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+
+          <div className="input-group">
+            <label>Password</label>
             <input
-              type="email"
-              placeholder="Enter email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Set login password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
 
           <div className="input-group">
             <label>Phone</label>
-            <input
-              type="text"
-              placeholder="Enter phone number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} required />
           </div>
 
           <div className="input-group">
             <label>Address</label>
-            <input
-              type="text"
-              placeholder="Enter address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-            />
+            <input value={address} onChange={(e) => setAddress(e.target.value)} required />
           </div>
 
           <div className="input-group">
@@ -130,22 +138,40 @@ function AddStaff() {
             </select>
           </div>
 
-          <button className="submit-btn" type="submit">
-            + Add Staff
+          {/* ---------------- KYC ---------------- */}
+          <h4 className="kyc-title">KYC Details (Admin)</h4>
+
+          <div className="input-group">
+            <label>Aadhaar Number</label>
+            <input value={aadhaarNumber} onChange={(e) => setAadhaarNumber(e.target.value)} required />
+          </div>
+
+          <div className="input-group">
+            <label>PAN Number</label>
+            <input value={panNumber} onChange={(e) => setPanNumber(e.target.value)} required />
+          </div>
+
+          <div className="input-group">
+            <label>Document URLs (comma separated)</label>
+            <input
+              placeholder="https://doc1, https://doc2"
+              value={documentUrls}
+              onChange={(e) => setDocumentUrls(e.target.value)}
+            />
+          </div>
+
+          <button className="submit-btn" type="submit" disabled={loading}>
+            {loading ? "Creating..." : "+ Add Staff"}
           </button>
         </form>
-
-        <p className="info-text">
-          A password setup link will be sent to the staff’s email.
-        </p>
       </div>
 
-      {/* STAFF LIST */}
+      {/* ---------------- STAFF LIST ---------------- */}
       <div className="staff-list-card">
         <h3>Staff Members</h3>
 
         {staffList.length === 0 ? (
-          <p className="no-staff">No staff added yet</p>
+          <p>No staff added yet</p>
         ) : (
           <table>
             <thead>
@@ -153,7 +179,8 @@ function AddStaff() {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Created At</th>
+                <th>KYC</th>
+                <th>Created</th>
               </tr>
             </thead>
             <tbody>
@@ -161,8 +188,9 @@ function AddStaff() {
                 <tr key={s._id}>
                   <td>{s.name}</td>
                   <td>{s.email}</td>
-                  <td style={{ textTransform: "capitalize" }}>{s.role}</td>
-                  <td>{new Date(s.createdAt).toLocaleString()}</td>
+                  <td>{s.role}</td>
+                  <td>✅ Completed</td>
+                  <td>{new Date(s.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>

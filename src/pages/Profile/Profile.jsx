@@ -22,13 +22,13 @@ function Profile() {
   });
 
   useEffect(() => {
-  const role = localStorage.getItem("role");
+    const role = localStorage.getItem("role");
 
-  // 🚫 Staff must NOT open user profile
-  if (role === "detailer" || role === "cleaner" || role === "receptionist") {
-    navigate(`/staff/profile/${role}`, { replace: true });
-  }
-}, [navigate]);
+    // 🚫 Staff must NOT open user profile
+    if (role === "detailer" || role === "cleaner" || role === "receptionist") {
+      navigate(`/staff/profile/${role}`, { replace: true });
+    }
+  }, [navigate]);
 
   // -------------------- LOAD PROFILE & BOOKINGS --------------------
   useEffect(() => {
@@ -36,10 +36,10 @@ function Profile() {
 
     const token = localStorage.getItem("token");
 
-if (!token) {
-  setIsLoggedIn(false);
-  return;
-}
+    if (!token) {
+      setIsLoggedIn(false);
+      return;
+    }
 
     loadUserProfile(userId);
     loadUserBookings(userId);
@@ -157,17 +157,17 @@ if (!token) {
     <div className="profile-container">
       <h1>My Profile</h1>
 
-     
+
 
       {!user ? (
         <p>Loading...</p>
       ) : (
         <div className="profile-info">
-           <div className="profile-buttons">
-                <button onClick={() => setEditing(true)} className="profile-btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 16l-1 4l4-1L19.586 7.414a2 2 0 0 0 0-2.828l-.172-.172a2 2 0 0 0-2.828 0zM15 6l3 3m-5 11h8" /></svg>
-                </button>
-                </div>
+          <div className="profile-buttons">
+            <button onClick={() => setEditing(true)} className="profile-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 16l-1 4l4-1L19.586 7.414a2 2 0 0 0 0-2.828l-.172-.172a2 2 0 0 0-2.828 0zM15 6l3 3m-5 11h8" /></svg>
+            </button>
+          </div>
           {editing ? (
             <form className="edit-form" onSubmit={handleSave}>
               <label>Name</label>
@@ -224,7 +224,7 @@ if (!token) {
               </p>
 
               <div className="profile-buttons">
-                
+
                 <button onClick={handleLogout} className="profile-btn logout-btn">
                   Logout
                 </button>
@@ -260,48 +260,40 @@ if (!token) {
             </thead>
 
             <tbody>
-              {bookings.map((b) => (
-                <tr key={b._id}>
+  {bookings.map((b) => (
+    <tr key={b._id}>
 
-                  {/* Booking Number */}
-                  <td>{b.bookingNumber || "N/A"}</td>
+      <td>{b.bookingNumber}</td>
 
-                  {/* Services */}
-                  <td>{b.serviceIds?.map((s) => s.title).join(", ")}</td>
+      <td>{b.serviceIds?.length} Services</td>
 
-                  {/* Vehicle Info */}
-                  <td>{b.vehicleModel || "N/A"}</td>
-                  <td>{b.vehicleNumber || "N/A"}</td>
+      <td>{b.vehicleModel || "N/A"}</td>
+      <td>{b.vehicleNumber || "N/A"}</td>
 
-                  {/* Location */}
-                  <td>{b.location || "N/A"}</td>
+      <td>{b.location}</td>
 
-                  {/* Date & Time */}
-                  <td>{new Date(b.date).toLocaleDateString()}</td>
-                  <td>{b.time}</td>
+      <td>{new Date(b.date).toLocaleDateString("en-IN")}</td>
+      <td>{b.time}</td>
 
-                  {/* Status */}
-                  <td className={`status ${b.status}`}>{b.status}</td>
+      <td className={`status ${b.bookingStatus}`}>
+        {b.bookingStatus}
+      </td>
 
-                  {/* Total Amount */}
-                  <td>
-                    ₹{b.serviceIds?.reduce((sum, s) => sum + (s.finalPrice || 0), 0)}
-                  </td>
+      <td>₹{b.totalAmount}</td>
 
-                  {/* Cancel BTN */}
-                  <td>
-                    <button
-                      className="cancel-btn"
-                      disabled={b.status === "cancelled"}
-                      onClick={() => handleCancel(b._id)}
-                    >
-                      Cancel
-                    </button>
-                  </td>
+      <td>
+        <button
+          className="cancel-btn"
+          disabled={b.bookingStatus === "cancelled"}
+          onClick={() => handleCancel(b._id)}
+        >
+          Cancel
+        </button>
+      </td>
 
-                </tr>
-              ))}
-            </tbody>
+    </tr>
+  ))}
+</tbody>
 
           </table>
         )}

@@ -32,7 +32,7 @@ import StaffEdit from "../pages/admin/StaffEdit";
 import AdminAddPackage from "../pages/AdminAddPackage/AdminAddPackage";
 import ReceptionLayout from '../reception/ReceptionLayout';
 import ReceptionStaffList from "../reception/ReceptionStaffList";
-import AdminStaffApprovals from "../pages/admin/AdminStaffApprovals";
+
 // import AdminApproval from "../pages/admin/AdminApproval";
 
 
@@ -44,7 +44,7 @@ import StaffProfile from "../pages/Profile/StaffProfile";
 
 
 import ReceptionBookingApproval from "../reception/ReceptionBookingApproval";
-import SetPassword from "../pages/staff/Set-password";
+
 
 
 
@@ -57,8 +57,6 @@ import SetPassword from "../pages/staff/Set-password";
 
 import AdminRoute from "../routes/AdminRoute";
 import AdminSettings from "../pages/admin/AdminSettings";
-import UploadKYC from "../pages/staff/UploadKYC";
-import KycPending from "../pages/staff/KycPending";
 
 function AppRouter() {
   return (
@@ -88,8 +86,7 @@ function AppRouter() {
           <Route path="/admin/staff/:id/edit" element={<StaffEdit />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="/admin/add-package" element={<AdminAddPackage />} />
-          <Route path="/admin/staff-approvals" element={<AdminStaffApprovals />}
-          />
+         
           {/* <Route path="approvals" element={<AdminApproval />} /> */}
 
 
@@ -149,9 +146,7 @@ function AppRouter() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/users" element={<UsersList />} />
-          <Route path="/staff/set-password" element={<SetPassword />} />
-          <Route path="/staff/upload-kyc" element={<UploadKYC />} />
-          <Route path="/staff/kyc-pending" element={<KycPending />} />
+          
 
 
 

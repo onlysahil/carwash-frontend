@@ -70,17 +70,15 @@ function Booking() {
 async function handleSubmit(e) {
   e.preventDefault();
 
-  const token = localStorage.getItem("access_token");
-
-  // 🚨 NOT LOGGED IN
-  if (!token) {
-    navigate("/login", {
-      state: {
-        message: "Please login or create an account to book a service",
-      },
-    });
-    return;
-  }
+const token = localStorage.getItem("token"); // <-- match the login key
+if (!token) {
+  navigate("/login", {
+    state: {
+      message: "Please login or create an account to book a service",
+    },
+  });
+  return;
+}
 
   setIsSubmitting(true);
 

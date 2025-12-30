@@ -2,7 +2,6 @@ import { useState } from "react";
 import "./Login.css";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
-import axiosClient from "../../api/axiosClient";
 
 function Login() {
   const { login } = useAuth();
@@ -13,11 +12,14 @@ function Login() {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false); // 👁️
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
       const result = await login({
@@ -25,120 +27,90 @@ function Login() {
         password: form.password,
       });
 
-      // FIRST-TIME STAFF
-      if (result?.requiresPasswordSetup) {
-        navigate("/staff/set-password", {
-          state: {
-            token: result.token,
-            email: form.email,
-          },
-        });
-        return;
-      }
-
       const role = result.role;
 
-      // ================= STAFF FLOW =================
-      if (role === "detailer" || role === "cleaner" || role === "receptionist") {
-        const profile = await axiosClient.get(
-          `/users/${localStorage.getItem("user_id")}`
-        );
-
-        const user = profile.data;
-
-        if (!user.documentUrls || user.documentUrls.length === 0) {
-          navigate("/staff/upload-kyc");
-          return;
-        }
-
-        // 📄 DOCUMENTS UPLOADED BUT PENDING
-        if (!user.documentUrls || user.documentUrls.length === 0) {
-          navigate("/staff/upload-kyc");
-          return;
-        }
-
-        // ⏳ DOCUMENTS SUBMITTED → PENDING
-        if (user.verificationStatus === "pending") {
-          navigate("/staff/kyc-pending");
-          return;
-        }
-
-        // ❌ REJECTED → RE-UPLOAD
-        if (user.verificationStatus === "rejected") {
-          navigate("/staff/upload-kyc");
-          return;
-        }
-
-        // ✅ APPROVED → ALLOW ACCESS
-        if (user.verificationStatus === "approved") {
-          if (role === "receptionist") {
-            navigate("/reception/dashboard");
-          } else {
-            navigate(`/staff/profile/${role}`);
-          }
-          return;
-        }
+      // ================= ROLE BASED REDIRECT =================
+      if (role === "admin") {
+        navigate("/admin/dashboard");
+      } 
+      else if (role === "receptionist") {
+        navigate("/reception/dashboard");
+      } 
+      else if (role === "detailer") {
+        navigate("/staff/profile/detailer");
+      } 
+      else if (role === "cleaner") {
+        navigate("/staff/profile/cleaner");
+      } 
+      else {
+        // normal customer
+        navigate("/profile");
       }
-
-      // ================= NORMAL USER FLOW =================
-      navigate("/profile");
 
     } catch (err) {
       const backendMessage =
         err.response?.data?.message || "Invalid email or password";
-
       setError(backendMessage);
+    } finally {
+      setLoading(false);
     }
   }
 
-
-
   return (
-    <>
+    <div className="login-container">
+      <h1>LOGIN</h1>
 
+      <form className="login-form" onSubmit={handleSubmit}>
+        {/* EMAIL */}
+        <label>Email</label>
+        <input
+          type="email"
+          value={form.email}
+          onChange={(e) =>
+            setForm({ ...form, email: e.target.value })
+          }
+          required
+        />
 
-      {/* LOGIN FORM */}
-      <div className="login-container">
-        <h1>LOGIN</h1>
-
-        <form className="login-form" onSubmit={handleSubmit}>
-          <label>Email</label>
+        {/* PASSWORD */}
+        <label>Password</label>
+        <div className="password-wrapper">
           <input
-            type="email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            type={showPassword ? "text" : "password"}
+            value={form.password}
+            onChange={(e) =>
+              setForm({ ...form, password: e.target.value })
+            }
+            required
           />
 
-          {form.password !== null && (
-            <>
-              <label>Password</label>
-              <input
-                type="password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-              />
-            </>
-          )}
+          {/* 👁️ EYE BUTTON */}
+          <span
+            className="eye-btn"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </span>
+        </div>
 
-          <button type="submit" className="login-btn">
-            Login
-          </button>
+        <button type="submit" className="login-btn" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
 
-          {error && <p className="login-error">{error}</p>}
+        {error && <p className="login-error">{error}</p>}
 
-          <p className="forgot-pass">
-            <Link to="/forgot-password">Forgot Password?</Link>
-          </p>
+        <p className="forgot-pass">
+          <Link to="/forgot-password">Forgot Password?</Link>
+        </p>
 
-          <p className="login-signup-text">
-            Don’t have an account?{" "}
-            <Link to="/signup" className="signup-link">
-              Sign up
-            </Link>
-          </p>
-        </form>
-      </div>
-    </>
+        <p className="login-signup-text">
+          Don’t have an account?{" "}
+          <Link to="/signup" className="signup-link">
+            Sign up
+          </Link>
+        </p>
+      </form>
+    </div>
   );
 }
 

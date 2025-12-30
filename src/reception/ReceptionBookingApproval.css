@@ -1,59 +1,131 @@
 .reception-dashboard {
   padding: 30px;
-  color: #fff;
-  overflow: visible;
+  background: #f6f7f9;
+  font-family: "Lexend", sans-serif;
 }
 
+/* TITLE */
 .reception-dashboard h1 {
-  color: black;
-  margin-bottom: 20px;
-  font-size: 26px;
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 500;
+  color: #000;
 }
 
+/* ================================
+   TABLE
+================================ */
 .reception-table {
   width: 100%;
-  border-collapse: collapse;
-  background: #111;
-  border-radius: 10px;
-  overflow: visible; /* 🔥 FIX */
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fffaf3;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
-.reception-table th,
-.reception-table td {
-  padding: 14px;
-  border-bottom: 1px solid #222;
-  text-align: left;
-  overflow: visible; /* 🔥 FIX */
+/* HEADER */
+.reception-table thead tr {
+  background: #103b65;
 }
 
 .reception-table th {
-  background: #181818;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  text-align: left;
 }
 
+/* BODY */
+.reception-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #222;
+  border-bottom: 1px solid #eee;
+}
+
+.reception-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ================================
+   STATUS
+================================ */
 .status {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .pending-status {
-  color: #ffcc00;
+  color: #f5a623;
 }
 
+.confirmed-status {
+  color: #2e7d32;
+}
+
+.cancelled-status {
+  color: #c62828;
+}
+
+/* ================================
+   ACTION DROPDOWN
+================================ */
 .action-dropdown {
-  background: #222;
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #333;
+  padding: 7px 14px;
+  font-size: 13px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
   outline: none;
-  position: relative;
-  z-index: 9999; /* 🔥 FIX */
 }
 
 .action-dropdown option {
-  background: #111;
-  color: #fff;
+  background: #fff;
+  color: #222;
 }
 
+/* ================================
+   EMPTY STATE
+================================ */
 .no-requests {
-  color: black;
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .reception-table thead {
+    display: none;
+  }
+
+  .reception-table tr {
+    display: block;
+    margin-bottom: 12px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .reception-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-bottom: none;
+  }
+
+  .reception-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+  }
+
+  .action-dropdown {
+    width: 100%;
+  }
 }
