@@ -9,6 +9,9 @@ function StaffProfile() {
 
   const [staff, setStaff] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [packages, setPackages] = useState([]);
+  const [addons, setAddons] = useState([]);
+
   const [editing, setEditing] = useState(false);
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
@@ -20,7 +23,7 @@ function StaffProfile() {
     address: "",
   });
 
-  // ================= AUTH CHECK =================
+  /* ================= AUTH CHECK ================= */
   useEffect(() => {
     const storedRole = localStorage.getItem("role");
     const userId = localStorage.getItem("user_id");
@@ -40,20 +43,33 @@ function StaffProfile() {
       return;
     }
 
-    loadStaffProfile(userId);
-    loadStaffBookings(userId);
+    loadInitialData(userId);
   }, [navigate, role]);
 
-  // ================= LOAD PROFILE =================
-  const loadStaffProfile = async (staffId) => {
+  /* ================= LOAD ALL DATA ================= */
+  const loadInitialData = async (staffId) => {
     try {
-      const res = await axiosClient.get(`/users/${staffId}`);
-      setStaff(res.data);
+      const [profileRes, bookingRes, pkgRes, addonRes] = await Promise.all([
+        axiosClient.get(`/users/${staffId}`),
+        axiosClient.get(
+          role === "cleaner"
+            ? `/bookings/assigned/cleaner/${staffId}`
+            : `/bookings/assigned/detailer/${staffId}`
+        ),
+        axiosClient.get("/packages"),
+        axiosClient.get("/addons"),
+      ]);
+
+      setStaff(profileRes.data);
+      setBookings(Array.isArray(bookingRes.data) ? bookingRes.data : []);
+      setPackages(Array.isArray(pkgRes.data) ? pkgRes.data : []);
+      setAddons(Array.isArray(addonRes.data) ? addonRes.data : []);
+
       setFormData({
-        name: res.data.name || "",
-        email: res.data.email || "",
-        phone: res.data.phone || "",
-        address: res.data.address || "",
+        name: profileRes.data.name || "",
+        email: profileRes.data.email || "",
+        phone: profileRes.data.phone || "",
+        address: profileRes.data.address || "",
       });
     } catch (err) {
       console.error(err);
@@ -61,22 +77,21 @@ function StaffProfile() {
     }
   };
 
-  // ================= LOAD BOOKINGS =================
-  const loadStaffBookings = async (staffId) => {
-    try {
-      const endpoint =
-        role === "cleaner"
-          ? `/bookings/assigned/cleaner/${staffId}`
-          : `/bookings/assigned/detailer/${staffId}`;
-
-      const res = await axiosClient.get(endpoint);
-      setBookings(res.data || []);
-    } catch (err) {
-      console.error("Failed to load bookings", err);
-    }
+  /* ================= HELPERS ================= */
+  const getPackageTitle = (id) => {
+    const pkg = packages.find((p) => p._id === id);
+    return pkg ? pkg.title : "Unknown Package";
   };
 
-  // ================= VALIDATION =================
+  const getAddonTitles = (ids = []) => {
+    if (!Array.isArray(ids)) return [];
+    return ids.map((id) => {
+      const addon = addons.find((a) => a._id === id);
+      return addon ? addon.title : "Unknown Add-on";
+    });
+  };
+
+  /* ================= VALIDATION ================= */
   const validate = () => {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name required";
@@ -86,7 +101,7 @@ function StaffProfile() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ================= SAVE PROFILE =================
+  /* ================= SAVE PROFILE ================= */
   const handleSave = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -104,7 +119,7 @@ function StaffProfile() {
     }
   };
 
-  // ================= LOGOUT =================
+  /* ================= LOGOUT ================= */
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = "/login";
@@ -180,7 +195,7 @@ function StaffProfile() {
             <thead>
               <tr>
                 <th>Booking</th>
-                <th>Service</th>
+                <th>Package & Add-ons</th>
                 <th>Vehicle</th>
                 <th>Date</th>
                 <th>Status</th>
@@ -190,9 +205,21 @@ function StaffProfile() {
               {bookings.map((b) => (
                 <tr key={b._id}>
                   <td>{b.bookingNumber}</td>
-                  <td>{b.serviceIds?.map((s) => s.title).join(", ")}</td>
+
+                  <td>
+                    <strong>{getPackageTitle(b.packageId)}</strong>
+                    {Array.isArray(b.addOnIds) && b.addOnIds.length > 0 && (
+                      <ul className="addon-list">
+                        {getAddonTitles(b.addOnIds).map((a, i) => (
+                          <li key={i}>{a}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </td>
+
                   <td>{b.vehicleModel}</td>
                   <td>{new Date(b.date).toLocaleDateString()}</td>
+
                   <td className={`status ${role === "cleaner" ? b.cleanerStatus : b.detailerStatus}`}>
                     {role === "cleaner" ? b.cleanerStatus : b.detailerStatus}
                   </td>

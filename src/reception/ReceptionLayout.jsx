@@ -4,7 +4,8 @@ import "../layouts/AdminLayout.css";
 export default function ReceptionLayout() {
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("access_token");
+ const token = localStorage.getItem("token");
+
 
   // 🔒 HARD BLOCK (this fixes everything)
   if (!token) {

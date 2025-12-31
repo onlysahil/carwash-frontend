@@ -95,7 +95,7 @@ Password: ${password}`
         <h2>Add New Staff</h2>
 
         {error && <p className="error-msg">{error}</p>}
-        {success && <pre className="success-msg">{success}</pre>}
+        {/* {success && <pre className="success-msg">{success}</pre>} */}
 
         <form onSubmit={handleSubmit}>
           <div className="input-group">

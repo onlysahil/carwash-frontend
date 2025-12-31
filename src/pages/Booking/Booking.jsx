@@ -1,34 +1,33 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
 import axiosClient from "../../api/axiosClient";
 import Loader from "../../components/Loader/Loader";
-import { useNavigate } from "react-router-dom";
 import ThankYouComponent from "../../components/ThankYouComponent/ThankYouComponent";
 import "./Booking.css";
 
 function Booking() {
   const location = useLocation();
-  const [services, setServices] = useState([]);
+  const navigate = useNavigate();
+
+  const [packages, setPackages] = useState([]);
+  const [addons, setAddons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const navigate = useNavigate();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
 
   const role = localStorage.getItem("role");
   const userId = localStorage.getItem("user_id");
-
   const isReceptionist = role === "receptionist";
-  const isCustomer = role === "customer";
 
   const [form, setForm] = useState({
     customerName: localStorage.getItem("name") || "",
     customerEmail: localStorage.getItem("email") || "",
     customerPhone: localStorage.getItem("phone") || "",
-    serviceIds: [],
+    packageId: "",
+    addOnIds: [],
+    vehicleType: "",
     location: "",
     date: "",
     time: "",
@@ -37,26 +36,58 @@ function Booking() {
     paymentMethod: "prepaid",
   });
 
+  /* =============================
+     LOAD PACKAGES + ADDONS
+  ============================== */
   useEffect(() => {
-    loadServices();
+    loadData();
   }, []);
 
-  async function loadServices() {
+  async function loadData() {
     try {
-      const res = await axiosClient.get("/services");
-      setServices(Array.isArray(res.data) ? res.data : []);
-    } catch {
-      setError("Failed to load services");
+      const [pkgRes, addonRes] = await Promise.all([
+        axiosClient.get("/packages"),
+        axiosClient.get("/addons"),
+      ]);
+
+      setPackages(Array.isArray(pkgRes.data) ? pkgRes.data : []);
+      setAddons(Array.isArray(addonRes.data) ? addonRes.data : []);
+    } catch (err) {
+      setError("Failed to load booking data");
     } finally {
       setLoading(false);
     }
   }
 
-  const calculateTotal = () =>
-    form.serviceIds.reduce((sum, id) => {
-      const srv = services.find((s) => s._id === id);
-      return srv ? sum + srv.price : sum;
-    }, 0);
+  /* =============================
+     PRICE CALCULATION
+  ============================== */
+  const getPackagePrice = () => {
+    if (!form.packageId || !form.vehicleType) return 0;
+
+    const selectedPackage = packages.find(
+      (p) => p._id === form.packageId
+    );
+
+    if (!selectedPackage || !Array.isArray(selectedPackage.pricing)) return 0;
+
+    const priceObj = selectedPackage.pricing.find(
+      (p) => p.vehicleType === form.vehicleType
+    );
+
+    return priceObj ? priceObj.price : 0;
+  };
+
+  const calculateTotal = () => {
+    let total = getPackagePrice();
+
+    form.addOnIds.forEach((id) => {
+      const addon = addons.find((a) => a._id === id);
+      if (addon) total += Number(addon.basePrice || 0);
+    });
+
+    return total;
+  };
 
   const convertToAMPM = (time24) => {
     if (!time24) return "";
@@ -67,78 +98,73 @@ function Booking() {
     return `${h}:${m} ${ampm}`;
   };
 
-async function handleSubmit(e) {
-  e.preventDefault();
+  /* =============================
+     SUBMIT
+  ============================== */
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-const token = localStorage.getItem("token"); // <-- match the login key
-if (!token) {
-  navigate("/login", {
-    state: {
-      message: "Please login or create an account to book a service",
-    },
-  });
-  return;
-}
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login", {
+        state: { message: "Please login to book a service" },
+      });
+      return;
+    }
 
-  setIsSubmitting(true);
+    setIsSubmitting(true);
 
-  const payload = {
-    userId: isCustomer ? userId : null,
-    customerName: form.customerName,
-    customerEmail: form.customerEmail,
-    customerPhone: form.customerPhone,
-    serviceIds: form.serviceIds,
-    location: form.location,
-    date: form.date,
-    time: convertToAMPM(form.time),
-    vehicleModel: form.vehicleModel,
-    vehicleNumber: form.vehicleNumber,
-    bookingStatus: "pending",
-    paymentMethod: form.paymentMethod,
-  };
+    const payload = {
+      userId,
+      packageId: form.packageId,
+      addOnIds: form.addOnIds,
+      location: form.location,
+      date: form.date,
+      time: convertToAMPM(form.time),
+      vehicleType: form.vehicleType,
+      vehicleModel: form.vehicleModel,
+      vehicleNumber: form.vehicleNumber,
+      bookingStatus: "pending",
+      paymentMethod: form.paymentMethod,
+    };
 
-  try {
-    await axiosClient.post("/bookings", payload);
-    setShowThankYou(true);
-    
-
-    setTimeout(() => {
-      navigate("/profile");
-    }, 3000);
-  } catch (err) {
-    alert(err.response?.data?.message || "Booking failed");
-  } finally {
-    setIsSubmitting(false);
+    try {
+      await axiosClient.post("/bookings", payload);
+      setShowThankYou(true);
+      setTimeout(() => navigate("/profile"), 3000);
+    } catch (err) {
+      alert(err.response?.data?.message || "Booking failed");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
-}
 
   if (showThankYou) return <ThankYouComponent />;
   if (loading) return <Loader />;
   if (error) return <p className="error">{error}</p>;
 
+  const selectedPackage = packages.find(p => p._id === form.packageId);
+
   return (
     <>
+      {location.state?.message && (
+        <p className="login-warning">{location.state.message}</p>
+      )}
 
-    {location.state?.message && (
-  <p className="login-warning">
-    {location.state.message}
-  </p>
-)}
-      {/* ===== HERO BANNER ===== */}
       <div className="booking-hero">
         <h1>Booking</h1>
       </div>
 
-      {/* ===== BOOKING CARD ===== */}
       <div className="booking-page">
         <form className="booking-form" onSubmit={handleSubmit}>
-          {/* CUSTOMER DETAILS (RECEPTIONIST ONLY) */}
+          <h1>Book A Service</h1>
+
+          {/* RECEPTIONIST ONLY */}
           {isReceptionist && (
             <>
               <label>
                 Customer Name
                 <input
-                  type="text"
                   value={form.customerName}
                   onChange={(e) =>
                     setForm({ ...form, customerName: e.target.value })
@@ -162,7 +188,6 @@ if (!token) {
               <label>
                 Customer Phone
                 <input
-                  type="tel"
                   value={form.customerPhone}
                   onChange={(e) =>
                     setForm({ ...form, customerPhone: e.target.value })
@@ -173,45 +198,74 @@ if (!token) {
             </>
           )}
 
-          {/* ===== SERVICES CHECKBOX CARDS ===== */}
+          {/* PACKAGE */}
+          <label>Main Package</label>
+          <select
+            value={form.packageId}
+            onChange={(e) =>
+              setForm({ ...form, packageId: e.target.value })
+            }
+            required
+          >
+            <option value="">Select Package</option>
+            {packages.map((pkg) => (
+              <option key={pkg._id} value={pkg._id}>
+                {pkg.title}
+              </option>
+            ))}
+          </select>
 
-          <h1>Book A Service</h1>
-          <label className="service-label">Services</label>
+          {/* PACKAGE INCLUDES */}
+          {selectedPackage?.includes?.length > 0 && (
+            <ul className="package-includes">
+              {selectedPackage.includes.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
+            </ul>
+          )}
 
-          <div className="service-grid">
-            {services.map((srv) => {
-              const selected = form.serviceIds.includes(srv._id);
+          {/* ADD ONS */}
+          <label>Add-ons</label>
+          <select
+            multiple
+            value={form.addOnIds}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                addOnIds: Array.from(
+                  e.target.selectedOptions,
+                  (o) => o.value
+                ),
+              })
+            }
+          >
+            {addons.map((addon) => (
+              <option key={addon._id} value={addon._id}>
+                {addon.title} – ₹{addon.basePrice}
+              </option>
+            ))}
+          </select>
 
-              return (
-                <div
-                  key={srv._id}
-                  className={`service-card ${selected ? "selected" : ""}`}
-                  onClick={() =>
-                    setForm({
-                      ...form,
-                      serviceIds: selected
-                        ? form.serviceIds.filter((id) => id !== srv._id)
-                        : [...form.serviceIds, srv._id],
-                    })
-                  }
-                >
-                  <div className="service-info">
-                    <p className="service-title">{srv.title}</p>
-                    <span className="service-price">₹{srv.price}</span>
-                  </div>
+          {/* VEHICLE TYPE */}
+          <label>
+            Vehicle Type
+            <select
+              value={form.vehicleType}
+              onChange={(e) =>
+                setForm({ ...form, vehicleType: e.target.value })
+              }
+              required
+            >
+              <option value="">Select</option>
+              <option value="hatchback">Hatchback</option>
+              <option value="sedan">Sedan</option>
+              <option value="suv">SUV</option>
+            </select>
+          </label>
 
-                  <input type="checkbox" checked={selected} readOnly />
-                </div>
-              );
-            })}
-          </div>
-
-          {/* LOCATION */}
           <label>
             Location
             <input
-              type="text"
-              placeholder="Enter Location"
               value={form.location}
               onChange={(e) =>
                 setForm({ ...form, location: e.target.value })
@@ -220,7 +274,6 @@ if (!token) {
             />
           </label>
 
-          {/* DATE */}
           <label>
             Date
             <input
@@ -234,7 +287,6 @@ if (!token) {
             />
           </label>
 
-          {/* TIME */}
           <label>
             Time
             <input
@@ -247,12 +299,9 @@ if (!token) {
             />
           </label>
 
-          {/* VEHICLE */}
           <label>
             Vehicle Model
             <input
-              type="text"
-              placeholder="Enter Vehicle Model"
               value={form.vehicleModel}
               onChange={(e) =>
                 setForm({ ...form, vehicleModel: e.target.value })
@@ -264,8 +313,6 @@ if (!token) {
           <label>
             Vehicle Number
             <input
-              type="text"
-              placeholder="Enter Vehicle Number"
               value={form.vehicleNumber}
               onChange={(e) =>
                 setForm({ ...form, vehicleNumber: e.target.value })
@@ -274,16 +321,13 @@ if (!token) {
             />
           </label>
 
-          {/* TOTAL */}
-          <p>
+          <p className="total-amount">
             Total Amount : ₹{calculateTotal()}
           </p>
 
-          {/* SUBMIT */}
           <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Booking..." : "Create Booking"}
           </button>
-          
         </form>
       </div>
     </>

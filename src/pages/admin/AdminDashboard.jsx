@@ -5,83 +5,61 @@ import "./AdminDashboard.css";
 function AdminDashboard() {
   const [stats, setStats] = useState({
     totalBookings: 0,
-    todayBookings: 0,
-    pendingBookings: 0,
-    completedBookings: 0,
     totalRevenue: 0,
-    totalCustomers: 0,
+
+    pending: 0,
+    confirmed: 0,
+    completed: 0,
+    cancelled: 0,
+
+    cleaner: 0,
+    detailer: 0,
+    customer: 0,
+    receptionist: 0,
   });
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchDashboardStats();
   }, []);
 
- async function fetchDashboardStats() {
-  try {
-    const [bookingRes, usersRes, paymentsRes] = await Promise.all([
-      axiosClient.get("/bookings"),
-      axiosClient.get("/users"),
-      axiosClient.get("/payments"),
-    ]);
+  async function fetchDashboardStats() {
+    try {
+      const [
+        revenueRes,
+        statusRes,
+        roleRes
+      ] = await Promise.all([
+        axiosClient.get("/bookings/Booking/Revenue/dashboard-stats"),
+        axiosClient.get("/bookings/stats/status-count"),
+        axiosClient.get("/users/stats/role-counts"),
+      ]);
 
-    const bookings =
-      bookingRes.data.data || bookingRes.data.bookings || [];
+      setStats({
+        totalBookings: revenueRes.data.totalBookings || 0,
+        totalRevenue: revenueRes.data.totalRevenue || 0,
 
-    const users =
-      usersRes.data.data || usersRes.data.users || [];
+        pending: statusRes.data.pending || 0,
+        confirmed: statusRes.data.confirmed || 0,
+        completed: statusRes.data.completed || 0,
+        cancelled: statusRes.data.cancelled || 0,
 
-    const payments =
-      paymentsRes.data.data || paymentsRes.data.payments || [];
-
-    const today = new Date().toISOString().split("T")[0];
-
-    const totalBookings = bookings.length;
-
-    const completedBookings = bookings.filter(
-      (b) => b.status === "completed"
-    ).length;
-
-    const pendingBookings = bookings.filter(
-      (b) => b.status === "pending"
-    ).length;
-
-    const todayBookings = bookings.filter(
-      (b) =>
-        (b.createdAt || b.date)?.startsWith(today)
-    ).length;
-
-    const todayCompletedBookings = bookings.filter(
-      (b) =>
-        b.status === "completed" &&
-        (b.createdAt || b.date)?.startsWith(today)
-    ).length;
-
-    const todayPendingBookings = bookings.filter(
-      (b) =>
-        b.status === "pending" &&
-        (b.createdAt || b.date)?.startsWith(today)
-    ).length;
-
-    const totalCustomers = users.filter(
-      (u) => u.role === "customer"
-    ).length;
-
-    const totalRevenue = payments
-      .filter((p) => p.status === "paid")
-      .reduce((sum, p) => sum + Number(p.amount || 0), 0);
-
-    setStats({
-      totalBookings,
-      todayBookings,
-      pendingBookings: todayPendingBookings,
-      completedBookings: todayCompletedBookings,
-      totalRevenue,
-      totalCustomers,
-    });
-  } catch (err) {
-    console.error("Dashboard fetch error", err);
+        cleaner: roleRes.data.cleaner || 0,
+        detailer: roleRes.data.detailer || 0,
+        customer: roleRes.data.customer || 0,
+        receptionist: roleRes.data.receptionist || 0,
+      });
+    } catch (err) {
+      console.error("Dashboard fetch error", err);
+    } finally {
+      setLoading(false);
+    }
   }
-}
+
+  if (loading) {
+    return <p style={{ padding: 20 }}>Loading dashboard...</p>;
+  }
 
   return (
     <div className="admin-dashboard">
@@ -95,22 +73,29 @@ function AdminDashboard() {
         </div>
       </div>
 
-      {/* TODAY DATA */}
-      <h3 className="section-title">Today’s Data</h3>
+      {/* BOOKINGS OVERVIEW */}
+      <h3 className="section-title">Bookings Overview</h3>
       <div className="card-grid">
-        <StatCard title="Today's Booking" value={stats.todayBookings} bg="purple" />
-        <StatCard title="Today's Completed Booking" value={stats.completedBookings} bg="green" />
-        <StatCard title="Today's Pending Booking" value={stats.pendingBookings} bg="orange" />
+        <StatCard title="Total Bookings" value={stats.totalBookings} bg="purple" />
+        <StatCard title="Pending Bookings" value={stats.pending} bg="orange" />
+        <StatCard title="Confirmed Bookings" value={stats.confirmed} bg="blue" />
+        <StatCard title="Completed Bookings" value={stats.completed} bg="green" />
+        <StatCard title="Cancelled Bookings" value={stats.cancelled} bg="red" />
       </div>
 
-      {/* TOTAL DATA */}
-      <h3 className="section-title">Total Data</h3>
+      {/* REVENUE */}
+      <h3 className="section-title">Revenue</h3>
       <div className="card-grid">
         <StatCard title="Total Revenue" value={`₹ ${stats.totalRevenue}`} bg="mint" />
-        <StatCard title="Completed Booking" value={stats.completedBookings} bg="green" />
-        <StatCard title="Pending Booking" value={stats.pendingBookings} bg="orange" />
-        <StatCard title="Total Booking" value={stats.totalBookings} bg="purple" />
-        <StatCard title="Total Customers" value={stats.totalCustomers} bg="blue" />
+      </div>
+
+      {/* USERS */}
+      <h3 className="section-title">Users</h3>
+      <div className="card-grid">
+        <StatCard title="Customers" value={stats.customer} bg="blue" />
+        <StatCard title="Receptionists" value={stats.receptionist} bg="purple" />
+        <StatCard title="Cleaners" value={stats.cleaner} bg="orange" />
+        <StatCard title="Detailers" value={stats.detailer} bg="green" />
       </div>
 
     </div>

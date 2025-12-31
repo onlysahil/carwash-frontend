@@ -28,26 +28,29 @@ export const AuthProvider = ({ children }) => {
 
   
   const login = async (credentials) => {
-    const res = await authApi.login(credentials);
+  const res = await authApi.login(credentials);
 
-    const token = res.data.token;
-    if (!token) throw new Error("Token missing in response");
+  const token = res.data.token;
+  if (!token) throw new Error("Token missing in response");
 
-    
-    localStorage.setItem("token", token);
-    localStorage.setItem("access_token", token);
+  // Save token
+  localStorage.setItem("token", token);
+  localStorage.setItem("access_token", token);
 
-    
-    const decoded = jwtDecode(token);
+  // 🔥 THIS WAS MISSING
+  setToken(token);
 
-    localStorage.setItem("user_id", decoded.id);
-    localStorage.setItem("email", decoded.email);
-    localStorage.setItem("role", decoded.role);
+  // Decode
+  const decoded = jwtDecode(token);
 
-    setUser(decoded); 
+  localStorage.setItem("user_id", decoded.id);
+  localStorage.setItem("email", decoded.email);
+  localStorage.setItem("role", decoded.role);
 
-    return decoded;
-  };
+  setUser(decoded);
+
+  return decoded;
+};
 
   
   const register = async (data) => {
@@ -88,12 +91,16 @@ export const AuthProvider = ({ children }) => {
   };
 
 
-  const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    setUser(null);
-    setToken(null);
-  };
+ const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("user_id");
+  localStorage.removeItem("email");
+  localStorage.removeItem("role");
+
+  setUser(null);
+  setToken(null);
+};
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout, register, forgotPassword, resetPassword }}>

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
 import "./AdminBookings.css";
-import Loader from "../../components/Loader/Loader"
+import Loader from "../../components/Loader/Loader";
 
 function AdminBookings() {
   const [bookings, setBookings] = useState([]);
   const [users, setUsers] = useState([]);
-  const [services, setServices] = useState([]);
+  const [packages, setPackages] = useState([]);
+  const [addons, setAddons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -18,15 +19,17 @@ function AdminBookings() {
     try {
       setLoading(true);
 
-      const [bRes, uRes, sRes] = await Promise.all([
+      const [bRes, uRes, pRes, aRes] = await Promise.all([
         axiosClient.get("/bookings"),
         axiosClient.get("/users"),
-        axiosClient.get("/services"),
+        axiosClient.get("/packages"),
+        axiosClient.get("/addons"),
       ]);
 
-      setBookings(bRes.data || []);
-      setUsers(uRes.data || []);
-      setServices(sRes.data || []);
+      setBookings(Array.isArray(bRes.data) ? bRes.data : []);
+      setUsers(Array.isArray(uRes.data) ? uRes.data : []);
+      setPackages(Array.isArray(pRes.data) ? pRes.data : []);
+      setAddons(Array.isArray(aRes.data) ? aRes.data : []);
     } catch (err) {
       console.error(err);
       setError("Unable to fetch bookings");
@@ -35,26 +38,37 @@ function AdminBookings() {
     }
   }
 
-  // Get User Name
+  /* =============================
+     HELPERS
+  ============================== */
+
   const getUserName = (id) => {
     const user = users.find((u) => u._id === id);
     return user ? user.name : "Unknown";
   };
 
-  // Get Service List
-  const getServices = (idList) => {
-    return idList.map((id) => {
-      const srv = services.find((s) => s._id === id);
-      return srv ? `${srv.title} — ₹${srv.price}` : "Unknown service";
+  const getPackageTitle = (id) => {
+    const pkg = packages.find((p) => p._id === id);
+    return pkg ? pkg.title : "Unknown Package";
+  };
+
+  const getAddonTitles = (ids = []) => {
+    if (!Array.isArray(ids)) return [];
+    return ids.map((id) => {
+      const addon = addons.find((a) => a._id === id);
+      return addon ? addon.title : "Unknown Add-on";
     });
   };
 
-  // ******* UPDATE STATUS (Completed Only) *******
+  /* =============================
+     STATUS ACTIONS
+  ============================== */
+
   async function markCompleted(id) {
     try {
       await axiosClient.put(`/bookings/${id}`, {
-        bookingStatus: "completed"
-      })
+        bookingStatus: "completed",
+      });
       loadData();
     } catch (err) {
       console.error(err);
@@ -62,7 +76,6 @@ function AdminBookings() {
     }
   }
 
-  // ******* CANCEL BOOKING (Correct NGROK API) *******
   async function cancelBooking(id) {
     try {
       await axiosClient.patch(`/bookings/cancel/${id}`);
@@ -84,20 +97,21 @@ function AdminBookings() {
         <thead>
           <tr>
             <th>User</th>
-            <th>Services</th>
+            <th>Package & Add-ons</th>
             <th>Date</th>
             <th>Time</th>
             <th>Vehicle</th>
             <th>Total</th>
             <th>Status</th>
-            {/* <th>Actions</th> */}
           </tr>
         </thead>
 
-        <tbody   style={{ backgroundColor: "center" }}>
+        <tbody>
           {bookings.length === 0 ? (
             <tr>
-              <td colSpan="8" style={{ textAlign: "center" }}>No bookings found</td>
+              <td colSpan="7" style={{ textAlign: "center" }}>
+                No bookings found
+              </td>
             </tr>
           ) : (
             bookings.map((b) => (
@@ -105,15 +119,23 @@ function AdminBookings() {
                 <td>{b.customerName || getUserName(b.userId)}</td>
 
                 <td>
-                  {getServices(b.serviceIds).map((s, i) => (
-                    <div key={i}>{s}</div>
-                  ))}
+                  <strong>{getPackageTitle(b.packageId)}</strong>
+
+                  {Array.isArray(b.addOnIds) && b.addOnIds.length > 0 && (
+                    <ul className="addon-list">
+                      {getAddonTitles(b.addOnIds).map((a, i) => (
+                        <li key={i}>{a}</li>
+                      ))}
+                    </ul>
+                  )}
                 </td>
 
                 <td>{b.date}</td>
                 <td>{b.time}</td>
 
-                <td>{b.vehicleModel} ({b.vehicleNumber})</td>
+                <td>
+                  {b.vehicleModel} ({b.vehicleNumber})
+                </td>
 
                 <td>₹{b.totalAmount}</td>
 
@@ -121,25 +143,20 @@ function AdminBookings() {
                   {b.bookingStatus}
                 </td>
 
-                {/* <td>
-                  {b.bookingStatus !== "completed" && b.bookingStatus !== "cancelled" && (
-                    <button
-                      className="admin-btn"
-                      onClick={() => markCompleted(b._id)}
-                    >
-                      Mark Completed
-                    </button>
-                  )}
-
-                  {b.status !== "cancelled" && (
-                    <button
-                      className="admin-btn danger"
-                      onClick={() => cancelBooking(b._id)}
-                    >
-                      Cancel
-                    </button>
-                  )}
-                </td> */}
+                {/* ACTIONS (optional) */}
+                {/* 
+                <td>
+                  {b.bookingStatus !== "completed" &&
+                    b.bookingStatus !== "cancelled" && (
+                      <button
+                        className="admin-btn"
+                        onClick={() => markCompleted(b._id)}
+                      >
+                        Mark Completed
+                      </button>
+                    )}
+                </td>
+                */}
               </tr>
             ))
           )}

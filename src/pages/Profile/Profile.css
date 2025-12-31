@@ -1,32 +1,71 @@
-.profile-info {
-  background: #eef1f4;
-  padding: 28px;
+.profile-banner {
+  max-width: 1627px;
+  width: 100%;
+  height: 230px;
+  background: url(../../../public/images/profilebanner.png) no-repeat;
   border-radius: 18px;
-  box-shadow: none;
-  max-width: 420px;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0px auto 24px;
+}
+
+.profile-banner h1 {
+  color: #ffffff;
+  font-size: 64px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.profile-layout {
+  margin: 30px 100px 50px 100px;
+  display: flex;
+  gap: 25px;
+  align-items: flex-start;
+}
+
+.profile-info {
+  min-width: 360px;
+}
+
+.profile-info p:first-of-type {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: left;
+}
+
+
+.profile-info {
+ height: 623px;
+    width: 427px;
+    background: #E7EBF0;
+    padding: 28px;
+    border-radius: 18px;
+    box-shadow: none;
+    /* max-width: 420px; */
+    position: relative;
 }
 
 /* AVATAR CIRCLE */
 .profile-info::before {
-  content: "";
-  width: 70px;
-  height: 70px;
-  background: #ffffff;
-  border-radius: 50%;
-  display: block;
-  margin-bottom: 15px;
-  background-image: url("https://cdn-icons-png.flaticon.com/512/847/847969.png");
-  background-size: 40px;
-  background-repeat: no-repeat;
-  background-position: center;
+    content: "";
+    width: 70px;
+    height: 70px;
+    background: #ffffff;
+    border-radius: 50%;
+    display: block;
+      background-image: url("https://cdn-icons-png.flaticon.com/512/847/847969.png");
+    background-size: 40px;
+    background-repeat: no-repeat;
+    background-position: center;
+
 }
 
 
 
 /* NAME */
 .profile-info p:first-of-type {
-  font-size: 22px;
+  font-size: 32px;
   font-weight: 700;
   margin-bottom: 18px;
 }
@@ -34,7 +73,7 @@
 /* LABEL */
 .profile-info strong {
   display: block;
-  font-size: 14px;
+  font-size: 20px;
   color: #555;
   margin-bottom: 6px;
 }
@@ -78,6 +117,23 @@
   font-size: 16px;
 }
 
+@media (max-width: 1200px) {
+  .profile-layout {
+    margin: 30px 40px;
+    gap: 20px;
+  }
+
+  .profile-info {
+    width: 380px;
+  }
+
+  .profile-banner h1 {
+    font-size: 52px;
+  }
+}
+
+
+
 /* ============================
    EDIT FORM
 ============================ */
@@ -117,6 +173,7 @@
   color: #ff3b30;
   font-size: 12px;
 }
+
 /* ACTION BUTTONS INSIDE FORM */
 .form-actions {
   display: flex;
@@ -157,31 +214,33 @@
    PROFILE BUTTONS
 ============================ */
 .profile-buttons {
-     margin-top: 25px;
+  position: relative;
+    /* margin-top: 25px; */
     display: flex;
     gap: 15px;
     justify-content: right;
+    bottom: 10%;
 }
 
 .profile-btn {
-  /* flex: 1; */
-  /* background: #ffb400; */
-  color: black;
-  padding: 12px 0;
-  border: none;
-  border-radius: 8px;
-  font-size: 17px;
-  cursor: pointer;
-  transition: 0.3s;
-  font-weight: 600;
+  background: #FFFFFF;
+    color: black;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 48px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 600;
+
 }
 
 .profile-btn:hover {
-  background: #e79e00;
+  background: gray;
 }
 
 .logout-btn {
-  background: #ff3b30 !important;
+  background: #9A0002 !important;
   color: white;
 }
 
@@ -199,12 +258,34 @@
   font-weight: 600;
 }
 
+.vehicle-cell {
+  line-height: 1.3;
+}
+
+.vehicle-model {
+  font-weight: 600;
+  color: #111827;
+}
+
+.vehicle-number {
+  font-size: 12px;
+  color: #6b7280;
+}
+
 /* ============================
    BOOKINGS SECTION
 ============================ */
 /* ============================
    BOOKINGS – TABLE VIEW
 ============================= */
+
+.bookings-card {
+  flex: 1;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
 
 .booking-table {
   width: 100%;
@@ -220,7 +301,7 @@
 /* Header */
 .booking-table thead {
   color: white;
-    background: #103B65;
+  background: #103B65;
 }
 
 .booking-table th {
@@ -253,6 +334,8 @@
   border-radius: 10px;
   text-align: center;
 }
+
+
 
 /* Status Colors */
 .status {
@@ -293,41 +376,110 @@
   cursor: not-allowed;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+
+@media (max-width: 1200px) {
+  .profile-layout {
+    margin: 30px 40px;
+    gap: 20px;
+  }
+
+  .profile-info {
+    width: 380px;
+  }
+
+  .profile-banner h1 {
+    font-size: 52px;
+  }
+}
+
+
+@media (max-width: 992px) {
+  .profile-layout {
+    flex-direction: column;
+    margin: 20px;
+  }
+
+  .profile-info {
+    width: 100%;
+    height: auto;
+  }
+
+  .bookings-card {
+    width: 100%;
+    overflow-x: auto;
+  }
+
   .booking-table {
+    min-width: 900px;
+  }
+
+  .profile-banner {
+    height: 180px;
+  }
+
+  .profile-banner h1 {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-banner {
+    height: 150px;
+    border-radius: 12px;
+  }
+
+  .profile-banner h1 {
+    font-size: 34px;
+  }
+
+  .profile-layout {
+    margin: 16px;
+  }
+
+  .profile-info strong {
+    font-size: 16px;
+  }
+
+  .profile-info p:first-of-type {
+    font-size: 26px;
+  }
+
+  .booking-table th,
+  .booking-table td {
     font-size: 13px;
-  }
-  .booking-table th,
-  .booking-table td {
-    padding: 10px;
-  }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .booking-table th,
-  .booking-table td {
-    font-size: 14px;
     padding: 10px;
   }
 }
 
 
-/* ============================
-   RESPONSIVE DESIGN
-============================ */
-@media (max-width: 768px) {
-  .profile-container {
-    margin-top: 90px;
-    width: 94%;
+@media (max-width: 480px) {
+  .profile-banner {
+    height: 120px;
   }
 
-  .profile-buttons {
-    flex-direction: column;
+  .profile-banner h1 {
+    font-size: 26px;
   }
 
-  .form-actions {
-    flex-direction: column;
+  .profile-info {
+    padding: 20px;
+  }
+
+  .profile-info::before {
+    width: 55px;
+    height: 55px;
+    background-size: 30px;
+  }
+
+  .profile-info p:first-of-type {
+    font-size: 22px;
+  }
+
+  .logout-btn {
+    width: 100%;
+  }
+
+  .booking-table {
+    min-width: 800px;
   }
 }

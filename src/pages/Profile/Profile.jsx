@@ -154,152 +154,167 @@ function Profile() {
 
   // -------------------- MAIN PAGE --------------------
   return (
-    <div className="profile-container">
-      <h1>My Profile</h1>
+
+    <>
+      <div className="profile-banner">
+        <h1>User Profile</h1>
+      </div>
+
+      <div className="profile-container profile-layout">
 
 
 
-      {!user ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="profile-info">
-          <div className="profile-buttons">
-            <button onClick={() => setEditing(true)} className="profile-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 16l-1 4l4-1L19.586 7.414a2 2 0 0 0 0-2.828l-.172-.172a2 2 0 0 0-2.828 0zM15 6l3 3m-5 11h8" /></svg>
-            </button>
+
+        {!user ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="profile-info">
+            <div className="profile-buttons">
+              <button onClick={() => setEditing(true)} className="profile-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 16l-1 4l4-1L19.586 7.414a2 2 0 0 0 0-2.828l-.172-.172a2 2 0 0 0-2.828 0zM15 6l3 3m-5 11h8" /></svg>
+              </button>
+            </div>
+            {editing ? (
+              <form className="edit-form" onSubmit={handleSave}>
+                <label>Name</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+                {errors.name && <p className="error-msg">{errors.name}</p>}
+
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
+                {errors.email && <p className="error-msg">{errors.email}</p>}
+
+                <label>Phone</label>
+                <input
+                  type="text"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+                {errors.phone && <p className="error-msg">{errors.phone}</p>}
+
+                <label>Address</label>
+                <input
+                  type="text"
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
+                  }
+                />
+                {errors.address && <p className="error-msg">{errors.address}</p>}
+
+                <div className="form-actions">
+                  <button type="submit" className="save-btn">Save</button>
+                  <button className="cancel-edit-btn" onClick={() => setEditing(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <>
+                <p><strong></strong> {user.name}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Role:</strong> {user.role}</p>
+                <p><strong>Number:</strong> {user.phone}</p>
+                <p><strong>Address:</strong> {user.address}</p>
+                <p>
+                  <strong>Joined On:</strong>{" "}
+                  {new Date(user.createdAt).toDateString()}
+                </p>
+
+                <div className="profile-buttons">
+
+                  <button onClick={handleLogout} className="profile-btn logout-btn">
+                    Logout
+                  </button>
+                </div>
+              </>
+            )}
           </div>
-          {editing ? (
-            <form className="edit-form" onSubmit={handleSave}>
-              <label>Name</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
-              {errors.name && <p className="error-msg">{errors.name}</p>}
+        )}
 
-              <label>Email</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
-              {errors.email && <p className="error-msg">{errors.email}</p>}
+        {message && <p className="profile-msg">{message}</p>}
 
-              <label>Phone</label>
-              <input
-                type="text"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              />
-              {errors.phone && <p className="error-msg">{errors.phone}</p>}
+        {/* -------------------- BOOKINGS TABLE -------------------- */}
+        <div className="profile-bookings bookings-card">
 
-              <label>Address</label>
-              <input
-                type="text"
-                value={formData.address}
-                onChange={(e) =>
-                  setFormData({ ...formData, address: e.target.value })
-                }
-              />
-              {errors.address && <p className="error-msg">{errors.address}</p>}
 
-              <div className="form-actions">
-                <button type="submit" className="save-btn">Save</button>
-                <button className="cancel-edit-btn" onClick={() => setEditing(false)}>
-                  Cancel
-                </button>
-              </div>
-            </form>
+          {bookings.length === 0 ? (
+            <p className="no-bookings">No bookings found</p>
           ) : (
-            <>
-              <p><strong>Name:</strong> {user.name}</p>
-              <p><strong>Email:</strong> {user.email}</p>
-              <p><strong>Role:</strong> {user.role}</p>
-              <p><strong>Number:</strong> {user.phone}</p>
-              <p><strong>Address:</strong> {user.address}</p>
-              <p>
-                <strong>Joined On:</strong>{" "}
-                {new Date(user.createdAt).toDateString()}
-              </p>
+            <table className="booking-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Booking No.</th>
+                  <th>Service</th>
+                  <th>Vehicle</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                  <th>Total</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
 
-              <div className="profile-buttons">
 
-                <button onClick={handleLogout} className="profile-btn logout-btn">
-                  Logout
-                </button>
-              </div>
-            </>
+              <tbody>
+                {bookings.map((b, index) => (
+                  <tr key={b._id}>
+                    <td>{index + 1}</td>   {/* SERIAL NUMBER */}
+
+                    <td>{b.bookingNumber}</td>
+
+                    <td>{b.serviceIds?.length} Services</td>
+
+                    <td className="vehicle-cell">
+  <div className="vehicle-model">{b.vehicleModel || "N/A"}</div>
+  <div className="vehicle-number">
+    ({b.vehicleNumber || "N/A"})
+  </div>
+</td>
+
+                    <td>{b.location}</td>
+
+                    <td>{new Date(b.date).toLocaleDateString("en-IN")}</td>
+                    <td>{b.time}</td>
+
+                    <td className={`status ${b.bookingStatus}`}>
+                      {b.bookingStatus}
+                    </td>
+
+                    <td>₹{b.totalAmount}</td>
+
+                    <td>
+                      <button
+                        className="cancel-btn"
+                        disabled={b.bookingStatus === "cancelled"}
+                        onClick={() => handleCancel(b._id)}
+                      >
+                        Cancel
+                      </button>
+                    </td>
+
+                  </tr>
+                ))}
+              </tbody>
+
+            </table>
           )}
         </div>
-      )}
-
-      {message && <p className="profile-msg">{message}</p>}
-
-      {/* -------------------- BOOKINGS TABLE -------------------- */}
-      <div className="profile-bookings">
-        <h2>My Bookings</h2>
-
-        {bookings.length === 0 ? (
-          <p className="no-bookings">No bookings found</p>
-        ) : (
-          <table className="booking-table">
-            <thead>
-              <tr>
-                <th>Booking No.</th>
-                <th>Service</th>
-                <th>Vehicle Model</th>
-                <th>Vehicle Number</th>
-                <th>Location</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th>
-                <th>Total</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-  {bookings.map((b) => (
-    <tr key={b._id}>
-
-      <td>{b.bookingNumber}</td>
-
-      <td>{b.serviceIds?.length} Services</td>
-
-      <td>{b.vehicleModel || "N/A"}</td>
-      <td>{b.vehicleNumber || "N/A"}</td>
-
-      <td>{b.location}</td>
-
-      <td>{new Date(b.date).toLocaleDateString("en-IN")}</td>
-      <td>{b.time}</td>
-
-      <td className={`status ${b.bookingStatus}`}>
-        {b.bookingStatus}
-      </td>
-
-      <td>₹{b.totalAmount}</td>
-
-      <td>
-        <button
-          className="cancel-btn"
-          disabled={b.bookingStatus === "cancelled"}
-          onClick={() => handleCancel(b._id)}
-        >
-          Cancel
-        </button>
-      </td>
-
-    </tr>
-  ))}
-</tbody>
-
-          </table>
-        )}
       </div>
-    </div>
+
+    </>
   );
+
 }
 
 export default Profile;
