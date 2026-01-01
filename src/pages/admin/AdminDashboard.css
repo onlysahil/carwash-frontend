@@ -1,16 +1,20 @@
 .admin-dashboard {
   padding: 24px;
-  background: #f7f8fa;
+  
   min-height: 100vh;
 }
 
 /* Top bar */
 .admin-topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
+    background: #FFFFFF;
+    padding: 34px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
+
 
 .admin-topbar h2 {
   font-size: 24px;

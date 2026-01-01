@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../api/axiosClient";
+import Loader from "../../components/Loader/Loader";
 import "./AdminDashboard.css";
 
 function AdminDashboard() {
@@ -57,21 +58,15 @@ function AdminDashboard() {
     }
   }
 
-  if (loading) {
-    return <p style={{ padding: 20 }}>Loading dashboard...</p>;
-  }
-
+  if (loading) return <Loader />;
   return (
+
+    <>
+      
+      
     <div className="admin-dashboard">
 
-      {/* HEADER */}
-      <div className="admin-topbar">
-        <h2>Admin Dashboard</h2>
-
-        <div className="admin-search">
-          <input type="text" placeholder="Search" />
-        </div>
-      </div>
+    
 
       {/* BOOKINGS OVERVIEW */}
       <h3 className="section-title">Bookings Overview</h3>
@@ -99,6 +94,7 @@ function AdminDashboard() {
       </div>
 
     </div>
+    </>
   );
 }
 
@@ -108,6 +104,7 @@ function StatCard({ title, value, bg }) {
       <p className="stat-title">{title}</p>
       <h2 className="stat-value">{value}</h2>
     </div>
+    
   );
 }
 

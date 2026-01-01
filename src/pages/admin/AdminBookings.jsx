@@ -90,6 +90,7 @@ function AdminBookings() {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
+    
     <div className="admin-bookings-container">
       <h1>All Bookings</h1>
 

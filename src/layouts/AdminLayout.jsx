@@ -1,5 +1,7 @@
 // src/layouts/AdminLayout.jsx
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
+import AdminTopbar from "../pages/admin/AdminTopbar";
+
 import "./AdminLayout.css";
 
 
@@ -89,6 +91,7 @@ function AdminLayout() {
 
       {/* ---------------- MAIN PANEL ---------------- */}
       <main className="admin-main">
+         <AdminTopbar />
         <Outlet />
       </main>
 

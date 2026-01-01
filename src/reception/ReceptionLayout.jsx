@@ -1,21 +1,20 @@
 import { Outlet, NavLink, useNavigate, Navigate } from "react-router-dom";
 import "../layouts/AdminLayout.css"; 
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function ReceptionLayout() {
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
 
- const token = localStorage.getItem("token");
-
-
-  // 🔒 HARD BLOCK (this fixes everything)
+  const token = localStorage.getItem("token");
   if (!token) {
     return <Navigate to="/" replace />;
   }
+  
 
   function logoutReception() {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-
+    logout();                 // 🔥 clears EVERYTHING
     navigate("/", { replace: true });
   }
 

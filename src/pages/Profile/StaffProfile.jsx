@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../../api/axiosClient";
-import "./Profile.css";
+import Loader from "../../components/Loader/Loader";
+
+import "./StaffProfile.css";
 
 function StaffProfile() {
   const navigate = useNavigate();
   const { role } = useParams();
+
+  const [loading, setLoading] = useState(true);
+
 
   const [staff, setStaff] = useState(null);
   const [bookings, setBookings] = useState([]);
@@ -16,6 +21,15 @@ function StaffProfile() {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
 
+  const loggedInRole = localStorage.getItem("role");
+  const loggedInUserId = localStorage.getItem("user_id");
+
+  const normalizedRole = role?.toLowerCase();
+  const storedRole = loggedInRole?.toLowerCase();
+
+
+
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,212 +37,249 @@ function StaffProfile() {
     address: "",
   });
 
-  /* ================= AUTH CHECK ================= */
   useEffect(() => {
-    const storedRole = localStorage.getItem("role");
-    const userId = localStorage.getItem("user_id");
+    if (!loggedInUserId || !loggedInRole) return;
 
-    if (!storedRole || !userId) {
-      navigate("/login");
-      return;
-    }
-
-    if (!["detailer", "cleaner", "receptionist"].includes(storedRole)) {
+    if (!["detailer", "cleaner"].includes(storedRole)) {
       navigate("/profile", { replace: true });
       return;
     }
 
-    if (storedRole !== role) {
+    if (normalizedRole !== storedRole) {
       navigate(`/staff/profile/${storedRole}`, { replace: true });
       return;
     }
 
-    loadInitialData(userId);
-  }, [navigate, role]);
+    loadInitialData(loggedInUserId);
 
-  /* ================= LOAD ALL DATA ================= */
+    const interval = setInterval(() => {
+      loadInitialData(loggedInUserId);
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [loggedInUserId, loggedInRole, normalizedRole, storedRole]);
+
   const loadInitialData = async (staffId) => {
+    setLoading(true);
+
     try {
-      const [profileRes, bookingRes, pkgRes, addonRes] = await Promise.all([
+      const results = await Promise.allSettled([
         axiosClient.get(`/users/${staffId}`),
+
         axiosClient.get(
-          role === "cleaner"
+          storedRole === "cleaner"
             ? `/bookings/assigned/cleaner/${staffId}`
             : `/bookings/assigned/detailer/${staffId}`
         ),
+
         axiosClient.get("/packages"),
         axiosClient.get("/addons"),
       ]);
 
-      setStaff(profileRes.data);
-      setBookings(Array.isArray(bookingRes.data) ? bookingRes.data : []);
-      setPackages(Array.isArray(pkgRes.data) ? pkgRes.data : []);
-      setAddons(Array.isArray(addonRes.data) ? addonRes.data : []);
+      /* ===== PROFILE (MUST LOAD) ===== */
+      if (results[0].status === "fulfilled") {
+        const profile = results[0].value.data;
+        setStaff(profile);
 
-      setFormData({
-        name: profileRes.data.name || "",
-        email: profileRes.data.email || "",
-        phone: profileRes.data.phone || "",
-        address: profileRes.data.address || "",
-      });
+        setFormData({
+          name: profile.name || "",
+          email: profile.email || "",
+          phone: profile.phone || "",
+          address: profile.address || "",
+        });
+      } else {
+        throw new Error("Profile API failed");
+      }
+
+      /* ===== BOOKINGS ===== */
+      if (results[1].status === "fulfilled") {
+        const bookingData = results[1].value.data;
+setBookings(
+  Array.isArray(bookingData)
+    ? bookingData
+    : bookingData?.bookings || []
+);
+      } else {
+        setBookings([]);
+      }
+
+      /* ===== PACKAGES ===== */
+      if (results[2].status === "fulfilled") {
+        setPackages(results[2].value.data || []);
+      }
+
+      /* ===== ADDONS ===== */
+      if (results[3].status === "fulfilled") {
+        setAddons(results[3].value.data || []);
+      }
+
     } catch (err) {
-      console.error(err);
-      navigate("/login");
+      console.error("Profile load failed", err);
+      setMessage("Failed to load profile");
+    } finally {
+      setLoading(false);   // 🔥 ALWAYS stop loader
     }
   };
 
-  /* ================= HELPERS ================= */
-  const getPackageTitle = (id) => {
-    const pkg = packages.find((p) => p._id === id);
-    return pkg ? pkg.title : "Unknown Package";
+
+
+  const toggleStaffStatus = async () => {
+    try {
+      const res = await axiosClient.patch(
+        `/users/staff/${loggedInUserId}/Activate-Deactivate`,
+        { isActive: !staff.isActive }
+      );
+      setStaff(res.data.staff);
+      setMessage(res.data.message);
+    } catch {
+      setMessage("❌ Failed to update status");
+    }
   };
 
-  const getAddonTitles = (ids = []) => {
-    if (!Array.isArray(ids)) return [];
-    return ids.map((id) => {
-      const addon = addons.find((a) => a._id === id);
-      return addon ? addon.title : "Unknown Add-on";
-    });
-  };
-
-  /* ================= VALIDATION ================= */
   const validate = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Name required";
-    if (!formData.email.trim()) newErrors.email = "Email required";
-    if (!formData.phone.trim()) newErrors.phone = "Phone required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const e = {};
+    if (!formData.name.trim()) e.name = "Name required";
+    if (!formData.email.trim()) e.email = "Email required";
+    if (!formData.phone.trim()) e.phone = "Phone required";
+    setErrors(e);
+    return Object.keys(e).length === 0;
   };
 
-  /* ================= SAVE PROFILE ================= */
   const handleSave = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     try {
-      const staffId = localStorage.getItem("user_id");
-      const res = await axiosClient.patch(`/users/${staffId}`, formData);
-
+      const res = await axiosClient.patch(`/users/${loggedInUserId}`, formData);
       setStaff(res.data);
       setEditing(false);
       setMessage("✅ Profile updated successfully");
-    } catch (err) {
-      console.error(err);
+    } catch {
       setMessage("❌ Update failed");
     }
   };
 
-  /* ================= LOGOUT ================= */
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = "/login";
   };
 
-  if (!staff) return <p className="loading">Loading...</p>;
+  if (loading) return <Loader />;
+
+
 
   return (
-    <div className="profile-container">
-      <h1>{role.toUpperCase()} PROFILE</h1>
+    <div className="sp-container">
+      <div className="sp-card">
+        <div className="sp-header">
+          <span className="sp-role">
+            {role === "detailer" ? "Detailer" : "Cleaner"}
+          </span>
+        </div>
 
-      <div className="profile-info">
-        {editing ? (
-          <form className="edit-form" onSubmit={handleSave}>
-            <label>Name</label>
-            <input
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            />
-            {errors.name && <p className="error-msg">{errors.name}</p>}
+        <div className="sp-body">
+          <h2 className="sp-name">{staff.name}</h2>
 
-            <label>Email</label>
-            <input
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            />
-            {errors.email && <p className="error-msg">{errors.email}</p>}
+          <p className="sp-line"><strong>Phone:</strong> {staff.phone}</p>
+          <p className="sp-line"><strong>Email:</strong> {staff.email}</p>
 
-            <label>Phone</label>
-            <input
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            />
-            {errors.phone && <p className="error-msg">{errors.phone}</p>}
+          <div className="sp-status">
+            <span>Working Status</span>
+            <span className={staff.isActive ? "sp-active" : "sp-inactive"}>
+              {staff.isActive ? "Online" : "Offline"}
+            </span>
+          </div>
 
-            <label>Address</label>
-            <input
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-            />
+          {editing && (
+            <form className="sp-form" onSubmit={handleSave}>
+              <input value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Name"
+              />
+              {errors.name && <p className="sp-error">{errors.name}</p>}
 
-            <div className="form-actions">
-              <button type="submit" className="save-btn">Save</button>
-              <button type="button" className="cancel-edit-btn" onClick={() => setEditing(false)}>Cancel</button>
+              <input value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="Email"
+              />
+
+              <input value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                placeholder="Phone"
+              />
+
+              <input value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                placeholder="Address"
+              />
+
+              <button type="submit">Save</button>
+              <button type="button" onClick={() => setEditing(false)}>Cancel</button>
+            </form>
+          )}
+
+
+
+          {!editing && (
+            <div className="sp-actions">
+              <button onClick={() => setEditing(true)}>Edit</button>
+
+              <button
+                className={staff.isActive ? "sp-deactivate" : "sp-activate"}
+                onClick={toggleStaffStatus}
+              >
+                {staff.isActive ? "Go Offline" : "Go Online"}
+              </button>
+
+              <button className="sp-logout" onClick={handleLogout}>
+                Logout
+              </button>
             </div>
-          </form>
-        ) : (
-          <>
-            <p><strong>Name:</strong> {staff.name}</p>
-            <p><strong>Email:</strong> {staff.email}</p>
-            <p><strong>Role:</strong> {staff.role}</p>
-            <p><strong>Phone:</strong> {staff.phone}</p>
-            <p><strong>Address:</strong> {staff.address}</p>
+          )}
 
-            <div className="profile-buttons">
-              <button className="profile-btn" onClick={() => setEditing(true)}>Edit</button>
-              <button className="logout-btn" onClick={handleLogout}>Logout</button>
-            </div>
-          </>
-        )}
+          {/* ===== ASSIGNED BOOKINGS ===== */}
+          <div className="sp-bookings">
+            <h3 className="sp-bookings-title">Today’s Bookings</h3>
+
+            {bookings.length === 0 && (
+              <p className="sp-no-bookings">No bookings assigned</p>
+            )}
+
+            {bookings.map((booking) => (
+              <div className="sp-booking-card" key={booking._id}>
+                <div className="sp-booking-left">
+                  <h4>
+                    Booking #{booking.bookingNumber}
+                    <span> ({booking.vehicleType})</span>
+                  </h4>
+
+                  <p className="sp-booking-address">
+                    📍 {booking.location || booking.address || "Location not available"}
+                  </p>
+
+                  <div className="sp-booking-time">
+                    {booking.time}
+                  </div>
+
+                  <button
+                    className="sp-view-btn"
+                    onClick={() => navigate(`/booking/${booking._id}`)}
+                  >
+                    View
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {message && <p className="profile-msg">{message}</p>}
 
-      {/* BOOKINGS */}
-      <div className="profile-bookings">
-        <h2>Assigned Bookings</h2>
 
-        {bookings.length === 0 ? (
-          <div className="no-bookings">No bookings assigned</div>
-        ) : (
-          <table className="booking-table">
-            <thead>
-              <tr>
-                <th>Booking</th>
-                <th>Package & Add-ons</th>
-                <th>Vehicle</th>
-                <th>Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map((b) => (
-                <tr key={b._id}>
-                  <td>{b.bookingNumber}</td>
 
-                  <td>
-                    <strong>{getPackageTitle(b.packageId)}</strong>
-                    {Array.isArray(b.addOnIds) && b.addOnIds.length > 0 && (
-                      <ul className="addon-list">
-                        {getAddonTitles(b.addOnIds).map((a, i) => (
-                          <li key={i}>{a}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </td>
 
-                  <td>{b.vehicleModel}</td>
-                  <td>{new Date(b.date).toLocaleDateString()}</td>
 
-                  <td className={`status ${role === "cleaner" ? b.cleanerStatus : b.detailerStatus}`}>
-                    {role === "cleaner" ? b.cleanerStatus : b.detailerStatus}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+      {/* {message && <p className="sp-message">{message}</p>} */}
     </div>
   );
 }

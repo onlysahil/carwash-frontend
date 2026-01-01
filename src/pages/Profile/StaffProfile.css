@@ -1,0 +1,194 @@
+.sp-container {
+    min-height: 100vh;
+    background: #f4f5f7;
+    display: flex;
+    justify-content: center;
+    padding: 14px;
+    font-family: "Inter", sans-serif;
+}
+
+.sp-card {
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    position: relative;
+}
+
+.sp-header {
+    height: 140px;
+    background: linear-gradient(135deg, #b30000, #7d0000);
+}
+
+.sp-role {
+    position: absolute;
+    top: 48px;
+    right: 116px;
+    color: #fff;
+    font-size: 34px;
+    font-weight: 600;
+}
+
+.sp-body {
+    padding: 24px 18px 18px;
+}
+
+.sp-name {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.sp-line {
+    font-size: 14px;
+    color: #444;
+    margin: 6px 0;
+}
+
+.sp-status {
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px 14px;
+    border-radius: 30px;
+    background: #8b0000;
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+}
+
+.sp-active {
+    background: #1dbf73;
+    padding: 6px 18px;
+    border-radius: 22px;
+}
+
+.sp-inactive {
+    background: #e5e5e5;
+    color: #333;
+    padding: 6px 18px;
+    border-radius: 22px;
+}
+
+.sp-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.sp-actions button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+}
+
+.sp-activate {
+    background: #1dbf73;
+    color: #fff;
+}
+
+.sp-deactivate {
+    background: #c62828;
+    color: #fff;
+}
+
+.sp-logout {
+    background: #111;
+    color: #fff;
+}
+
+.sp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sp-form input {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.sp-message {
+    text-align: center;
+    margin-top: 12px;
+}
+
+.sp-loading {
+    text-align: center;
+    margin-top: 100px;
+}
+
+
+/* ================= ASSIGNED BOOKINGS ================= */
+
+.sp-bookings {
+    margin-top: 18px;
+}
+
+.sp-bookings-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.sp-no-bookings {
+    font-size: 14px;
+    color: #777;
+    text-align: center;
+}
+
+/* ================= BOOKING CARD ================= */
+
+.sp-booking-card {
+    border: 1px solid #e6e6e6;
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    margin-bottom: 10px;
+}
+
+.sp-booking-left h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.sp-booking-left h4 span {
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+}
+
+.sp-booking-address {
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.sp-booking-right {
+    text-align: right;
+}
+
+.sp-booking-time {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sp-view-btn {
+    background: #8b0000;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 18px;
+    font-size: 12px;
+    margin-top: 6px;
+    cursor: pointer;
+}

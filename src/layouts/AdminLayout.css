@@ -2,6 +2,22 @@
    GLOBAL LAYOUT
 ========================= */
 
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f6f7f9;
+}
+
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-content {
+  padding: 24px;
+}
+
 .admin-logo {
   /* display: flex; */
   /* align-items: center; */
@@ -25,13 +41,15 @@
    SIDEBAR
 ========================= */
 .admin-sidebar {
-  width: 260px;
+  z-index: 1;
+  width: 250px;
   background: #ffffff;
   padding: 20px 18px;
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 6px 0 18px rgba(0, 0, 0, 0.08);
 }
+
 
 /* Logo / Title */
 .admin-title {
@@ -128,7 +146,8 @@
    MAIN CONTENT
 ========================= */
 .admin-main {
-  flex: 1;
-  padding: 25px;
-  overflow-y: auto;
+  background: white;
+  flex: 1 1;
+    padding: 0px;
+    overflow-y: auto;
 }

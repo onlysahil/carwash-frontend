@@ -1,39 +1,34 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+
+
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
-  const handleProfileClick = () => {
-    const userId = localStorage.getItem("user_id");
-    const role = localStorage.getItem("role");
+ const handleProfileClick = () => {
+  if (!user || !user.role) {
+    navigate("/login");
+    return;
+  }
 
-    // 🔐 Not logged in
-    if (!userId || !role) {
-      navigate("/login");
-      return;
-    }
-
-    // ================= ROLE BASED REDIRECT =================
-    if (role === "admin") {
-      navigate("/admin/dashboard");
-    }
-    else if (role === "receptionist") {
-      navigate("/reception/dashboard");
-    }
-    else if (role === "detailer") {
-      navigate("/staff/profile/detailer");
-    }
-    else if (role === "cleaner") {
-      navigate("/staff/profile/cleaner");
-    }
-    else {
-      // Normal customer
-      navigate("/profile");
-    }
-  };
+  if (user.role === "admin") {
+    navigate("/admin/dashboard");
+  } else if (user.role === "receptionist") {
+    navigate("/reception/dashboard");
+  } else if (user.role === "detailer") {
+    navigate("/staff/profile/detailer");
+  } else if (user.role === "cleaner") {
+    navigate("/staff/profile/cleaner");
+  } else {
+    navigate("/profile");
+  }
+};
 
   return (
     <div className="navbar-container">

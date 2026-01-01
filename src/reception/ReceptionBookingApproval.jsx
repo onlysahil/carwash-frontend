@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 import "./ReceptionBookingApproval.css";
-// import Loader from "../components/Loader/Loader";
+import Loader from "../components/Loader/Loader";
 
 function ReceptionBookingApproval() {
   const [bookings, setBookings] = useState([]);
@@ -9,6 +9,13 @@ function ReceptionBookingApproval() {
   const [detailers, setDetailers] = useState([]);
   const [cleaners, setCleaners] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const getValidAssignedId = (assignedId, activeList) => {
+    return activeList.some((u) => u._id === assignedId)
+      ? assignedId
+      : "";
+  };
+
 
   useEffect(() => {
     loadData();
@@ -23,11 +30,23 @@ function ReceptionBookingApproval() {
         axiosClient.get("/users"),
       ]);
 
-      setBookings(bRes.data || []);
-      setUsers(uRes.data || []);
+      const allUsers = uRes.data || [];
 
-      setDetailers(uRes.data.filter((u) => u.role === "detailer"));
-      setCleaners(uRes.data.filter((u) => u.role === "cleaner"));
+      setBookings(bRes.data || []);
+      setUsers(allUsers);
+
+      // ✅ ONLY ACTIVE STAFF
+      setDetailers(
+        allUsers.filter(
+          (u) => u.role === "detailer" && u.isActive === true
+        )
+      );
+
+      setCleaners(
+        allUsers.filter(
+          (u) => u.role === "cleaner" && u.isActive === true
+        )
+      );
     } catch (err) {
       console.error(err);
       alert("Error loading data");
@@ -46,7 +65,7 @@ function ReceptionBookingApproval() {
   async function approveBooking(id) {
     try {
       await axiosClient.patch(`/bookings/${id}/approve`);
-      await loadData();
+      loadData();
       alert("Booking approved!");
     } catch (err) {
       console.error(err);
@@ -58,7 +77,7 @@ function ReceptionBookingApproval() {
   async function rejectBooking(id) {
     try {
       await axiosClient.patch(`/bookings/cancel/${id}`);
-      await loadData();
+      loadData();
       alert("Booking rejected!");
     } catch (err) {
       console.error(err);
@@ -69,11 +88,17 @@ function ReceptionBookingApproval() {
   // ================= ASSIGN DETAILER =================
   async function assignDetailer(bookingId, detailerId) {
     if (!detailerId) return;
+
     try {
-      await axiosClient.patch(
+      const res = await axiosClient.patch(
         `/bookings/${bookingId}/assign-detailer/${detailerId}`
       );
-      loadData();
+
+      const updatedBooking = res.data.booking;
+
+      setBookings((prev) =>
+        prev.map((b) => (b._id === bookingId ? updatedBooking : b))
+      );
     } catch (err) {
       console.error(err);
       alert("Failed to assign detailer");
@@ -83,18 +108,25 @@ function ReceptionBookingApproval() {
   // ================= ASSIGN CLEANER =================
   async function assignCleaner(bookingId, cleanerId) {
     if (!cleanerId) return;
+
     try {
-      await axiosClient.patch(
+      const res = await axiosClient.patch(
         `/bookings/${bookingId}/assign-cleaner/${cleanerId}`
       );
-      loadData();
+
+      const updatedBooking = res.data.booking;
+
+      setBookings((prev) =>
+        prev.map((b) => (b._id === bookingId ? updatedBooking : b))
+      );
     } catch (err) {
       console.error(err);
       alert("Failed to assign cleaner");
     }
   }
 
-  // if (loading) return <Loader />;
+  // ✅ LOADER
+  if (loading) return <Loader />;
 
   return (
     <div className="reception-dashboard">
@@ -128,7 +160,9 @@ function ReceptionBookingApproval() {
 
                 {/* STATUS */}
                 <td className={`status ${b.bookingStatus}`}>
-                  {b.bookingStatus}
+                  {b.bookingStatus === "confirmed"
+                    ? "Confirmed"
+                    : b.bookingStatus}
                 </td>
 
                 {/* APPROVAL */}
@@ -137,8 +171,10 @@ function ReceptionBookingApproval() {
                     <select
                       className="action-dropdown"
                       onChange={(e) => {
-                        if (e.target.value === "approve") approveBooking(b._id);
-                        if (e.target.value === "reject") rejectBooking(b._id);
+                        if (e.target.value === "approve")
+                          approveBooking(b._id);
+                        if (e.target.value === "reject")
+                          rejectBooking(b._id);
                         e.target.value = "";
                       }}
                     >
@@ -147,36 +183,40 @@ function ReceptionBookingApproval() {
                       <option value="reject">Reject</option>
                     </select>
                   ) : (
-                    "Approved"
+                    "Confirmed"
                   )}
                 </td>
 
                 {/* ASSIGNMENT */}
-               <td className="assign-cell">
-  <select
-    disabled={!["approved", "confirmed"].includes(b.bookingStatus)}
-    onChange={(e) => assignDetailer(b._id, e.target.value)}
-  >
-    <option value="">Assign Detailer</option>
-    {detailers.map((d) => (
-      <option key={d._id} value={d._id}>
-        {d.name}
-      </option>
-    ))}
-  </select>
+                <td className="assign-cell">
+                  <select
+                    value={getValidAssignedId(b.assignedDetailer, detailers)}
+                    disabled={b.bookingStatus !== "confirmed"}
 
-  <select
-    disabled={!["approved", "confirmed"].includes(b.bookingStatus)}
-    onChange={(e) => assignCleaner(b._id, e.target.value)}
-  >
-    <option value="">Assign Cleaner</option>
-    {cleaners.map((c) => (
-      <option key={c._id} value={c._id}>
-        {c.name}
-      </option>
-    ))}
-  </select>
-</td>
+                    onChange={(e) => assignDetailer(b._id, e.target.value)}
+                  >
+                    <option value="">Assign Detailer</option>
+                    {detailers.map((d) => (
+                      <option key={d._id} value={d._id}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={getValidAssignedId(b.assignedCleaner, cleaners)}
+                    disabled={b.bookingStatus !== "confirmed"}
+
+                    onChange={(e) => assignCleaner(b._id, e.target.value)}
+                  >
+                    <option value="">Assign Cleaner</option>
+                    {cleaners.map((c) => (
+                      <option key={c._id} value={c._id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </td>
               </tr>
             ))}
           </tbody>
